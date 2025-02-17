@@ -26,6 +26,22 @@
 
 <body>
 
+    <script>
+        function detectarModoOrdenador() {
+            if (window.innerWidth > 1024) {
+                document.body.classList.add("modo-ordenador");
+            } else {
+                document.body.classList.remove("modo-ordenador");
+            }
+        }
+        
+        // Ejecutar al cargar la página
+        detectarModoOrdenador();
+        
+        // Escuchar cambios en el tamaño de la pantalla
+        window.addEventListener("resize", detectarModoOrdenador);
+    </script>
+
     <!-- Botón de hamburguesa -->
     <button class="menu-btn" id="menu-toggle">☰</button>
 
