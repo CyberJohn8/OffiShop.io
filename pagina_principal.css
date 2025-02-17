@@ -973,3 +973,33 @@ Formato para telefonos
 
 
 
+
+
+
+
+
+/* Estilos específicos cuando se detecta modo ordenador en dispositivos móviles */
+body.modo-ordenador {
+    font-size: 18px; /* Aumentar el tamaño del texto */
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Ajustes específicos para mejorar la vista en modo ordenador */
+body.modo-ordenador #menu_lateral {
+    width: 250px;
+}
+
+body.modo-ordenador .container {
+    max-width: 800px;
+}
+
+body.modo-ordenador main {
+    max-height: none;
+    overflow: visible;
+}
+
+
+
+
+
