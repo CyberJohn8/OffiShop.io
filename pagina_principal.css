@@ -1,5 +1,60 @@
    
 
+
+/* Modo computadora forzado */
+body.modo-computadora #menu_lateral {
+    width: 250px !important; /* Mantener el ancho correcto */
+    left: 0px !important; /* Asegurar que el menú esté visible */
+}
+
+body.modo-computadora main {
+    max-height: none !important; /* Eliminar restricciones de altura */
+    max-width: 70% !important; /* Usar todo el ancho disponible */
+}
+
+/* Restaurar otros elementos que se ocultan en móviles */
+body.modo-computadora #menu_contactos {
+    max-height: 100% !important;
+    padding: 25px !important;
+}
+
+body.modo-computadora .Cuerpo {
+    font-size: 16px !important; /* Restaurar el tamaño normal del texto */
+}
+
+
+
+@media (min-width: 1025px) {
+    /* Ajustes para el modo computadora */
+
+    /* Ajustar la barra lateral */
+    #menu_lateral {
+        width: 250px !important;
+        left: 0px !important;
+    }
+
+    /* Ajustar el contenido principal */
+    main {
+        max-height: none !important;
+        max-width: 70% !important;
+    }
+
+    /* Restaurar los estilos de la barra de contactos */
+    #menu_contactos {
+        max-height: 100% !important;
+        padding: 25px !important;
+    }
+
+    /* Ajustar los elementos internos */
+    .Cuerpo {
+        font-size: 16px !important;
+    }
+}
+
+
+
+
+
     /* General */
     body {
         font-family: 'Poppins', sans-serif;
@@ -913,24 +968,8 @@ Formato para telefonos
 
 
 
-/* Modo computadora forzado */
-body.modo-computadora #menu_lateral {
-    width: 250px !important; /* Mantener el ancho correcto */
-    left: 0px !important; /* Asegurar que el menú esté visible */
-}
 
-body.modo-computadora main {
-    max-height: none !important; /* Eliminar restricciones de altura */
-    max-width: 70% !important; /* Usar todo el ancho disponible */
-}
 
-/* Restaurar otros elementos que se ocultan en móviles */
-body.modo-computadora #menu_contactos {
-    max-height: 100% !important;
-    padding: 25px !important;
-}
 
-body.modo-computadora .Cuerpo {
-    font-size: 16px !important; /* Restaurar el tamaño normal del texto */
-}
+
 
