@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Título de la ventana del navegador -->
+    <title>OffiShop - Redes</title>
+
+    <!-- Iconos para la página -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+
+    <!-- Link de estilo css -->
+    <link rel="stylesheet" href="Mercado.css">
+
+    <!-- Link de librería jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Botón de hamburguesa -->
+    <button class="menu-btn" id="menu-toggle">☰</button>
+
+    <!-- Menú lateral -->
+    <nav id="menu_lateral">
+    <ul>
+        <li class="submenu_menu_lateral-toggle">
+        <a href="#" id="productos-toggle">Catálogo</a>
+        <ul class="submenu_menu_lateral">
+            <li><a href="../Productos_Seguridad/index.html">Sistemas de Seguridad</a></li>
+            <li><a href="../Productos_Computadoras/index.html">Computadoras</a></li>
+            <li><a href="../Productos_Computadoras/index.html">Periféricos</a></li>
+            <li><a href="../Productos_Computadoras/index.html">UPS</a></li>
+            <li><a href="../Productos_Computadoras/index.html">Almacenamiento</a></li>
+            <li><a href="../Productos_Impresoras/index.html">Impresoras</a></li>
+            <li><a href="../Productos_Impresoras/index.html">Consumibles de Impresoras</a></li>
+            <li><a href="../Productos_Impresoras_Fiscales/index.html">Impresoras Fiscales</a></li>
+        </ul>
+        </li>
+        <li><h4 style="color: #000000;">Página Actual</h4></li>
+        <li><a href="#Linea_Productos_Uno">Camaras</a></li>
+        <li><a href="#Linea_Productos_Dos">Cables</a></li>
+        <li><a href="#Linea_Productos_Tres">Controladores</a></li>
+    </ul>
+    </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        let menuToggle = document.getElementById("menu-toggle");
+        let menuLateral = document.getElementById("menu_lateral");
+        let productosToggle = document.getElementById("productos-toggle");
+        let submenu = productosToggle.nextElementSibling;
+
+            // Mostrar/ocultar menú lateral
+            menuToggle.addEventListener("click", function () {
+                menuLateral.style.left = menuLateral.style.left === "0px" ? "-200px" : "0px";
+            });
+
+            // Mostrar/ocultar submenú de productos
+            productosToggle.addEventListener("click", function (event) {
+                event.preventDefault();
+                submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+            });
+
+            // Cerrar menú si se hace clic fuera
+            document.addEventListener("click", function (event) {
+                if (!menuLateral.contains(event.target) && !menuToggle.contains(event.target)) {
+                    menuLateral.style.left = "-250px";
+                }
+            });
+        });
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="container">
+
+        <!--Encabezado de la pagina-->
+        <header>
+            <a href="../index.html" class="logo-text">
+                <span>O</span>ff<div class="pencil"></div><span>S</span>hop
+            </a>     
+        </header>
+
+
+        <!--Carrito de compras-->
+        <button id="carrito-boton" onclick="toggleCarrito()">🛒 <span id="contador-carrito">0</span></button>
+
+        <div id="carrito-container">
+            <h2>Lista de compras</h2>
+            <ul id="lista-carrito"></ul>
+            <button onclick="finalizarCompra()">Finalizar Compra</button>
+        </div>
+
+
+
+
+
+
+        <!-- JavaScript para los Productos en el carrito y generacion de la factura -->
+        <script>
+            // Recuperar el carrito desde localStorage o inicializarlo vacío
+            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+            // Ejecutar la función al cargar la página para actualizar el carrito en la interfaz
+            document.addEventListener("DOMContentLoaded", () => {
+                actualizarCarrito();
+            });
+
+            // **📌 Agregar productos al carrito**
+            function agregarAlCarrito(id, nombre, precio) {
+                console.log(`Agregando ${nombre} al carrito`);
+                let productoExistente = carrito.find(producto => producto.id === id);
+
+                if (productoExistente) {
+                    productoExistente.cantidad++; // Incrementar cantidad si el producto ya existe
+                } else {
+                    carrito.push({ id, nombre, precio, cantidad: 1 });
+                }
+
+                guardarCarrito();
+                actualizarCarrito();
+            }
+
+            // **📌 Actualizar la interfaz del carrito**
+            function actualizarCarrito() {
+                document.getElementById("contador-carrito").innerText = carrito.length;
+                let listaCarrito = document.getElementById("lista-carrito");
+                listaCarrito.innerHTML = "";
+
+                let total = 0;
+
+                carrito.forEach((producto, index) => {
+                    total += producto.precio * producto.cantidad;
+                    let item = document.createElement("li");
+                    item.innerHTML = `
+                        <span>${producto.nombre} - $${producto.precio} x ${producto.cantidad}</span>
+                        <div class="cantidad-control">
+                            <button class="btn-cantidad" data-index="${index}" data-change="-1">-</button>
+                            <span>${producto.cantidad}</span>
+                            <button class="btn-cantidad" data-index="${index}" data-change="1">+</button>
+                        </div>
+                        <button class="eliminar-producto" data-index="${index}">X</button>
+                    `;
+                    listaCarrito.appendChild(item);
+                });
+
+                let totalElemento = document.createElement("li");
+                totalElemento.innerHTML = `<strong>Total: $${total.toFixed(2)}</strong>`;
+                listaCarrito.appendChild(totalElemento);
+
+                // Agregar eventos a los botones de cantidad y eliminación
+                document.querySelectorAll(".btn-cantidad").forEach(btn => {
+                    btn.addEventListener("click", (event) => {
+                        let index = event.target.getAttribute("data-index");
+                        let change = parseInt(event.target.getAttribute("data-change"));
+                        cambiarCantidad(index, change);
+                        event.stopPropagation(); // Evita que se cierre el carrito
+                    });
+                });
+
+                document.querySelectorAll(".eliminar-producto").forEach(btn => {
+                    btn.addEventListener("click", (event) => {
+                        let index = event.target.getAttribute("data-index");
+                        eliminarDelCarrito(index);
+                        event.stopPropagation(); // Evita que se cierre el carrito
+                    });
+                });
+            }
+
+            // **📌 Cambiar la cantidad de un producto en el carrito**
+            function cambiarCantidad(index, cambio) {
+                if (carrito[index].cantidad + cambio > 0) {
+                    carrito[index].cantidad += cambio;
+                } else {
+                    carrito.splice(index, 1); // Eliminar el producto si la cantidad llega a 0
+                }
+
+                guardarCarrito();
+                actualizarCarrito();
+            }
+
+            // **📌 Eliminar un producto del carrito**
+            function eliminarDelCarrito(index) {
+                carrito.splice(index, 1);
+                guardarCarrito();
+                actualizarCarrito();
+            }
+
+            // **📌 Guardar el carrito en localStorage**
+            function guardarCarrito() {
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+            }
+
+            // **📌 Mostrar/Ocultar el carrito**
+            function toggleCarrito() {
+                let carritoContainer = document.getElementById("carrito-container");
+                carritoContainer.classList.toggle("activo");
+            }
+
+            // **📌 Cerrar el carrito si se hace clic fuera de él**
+            document.addEventListener("click", (e) => {
+                let carritoContainer = document.getElementById("carrito-container");
+                let carritoBoton = document.getElementById("carrito-boton");
+
+                if (carritoContainer.contains(e.target) || carritoBoton.contains(e.target)) {
+                    return;
+                }
+
+                carritoContainer.classList.remove("activo");
+            });
+
+            // **📌 Generar un código de verificación único para cada compra**
+            function generarCodigoVerificacion() {
+                const fecha = new Date();
+                return "VER-" + fecha.getFullYear() + (fecha.getMonth() + 1) + fecha.getDate() + "-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+            }
+
+            // **📌 Configurar EmailJS**
+            emailjs.init("1zr0ma1mLoMaoqJJn"); // Reemplaza con tu Public Key de EmailJS
+
+            // **📌 Finalizar compra y enviar la factura por correo sin PDF**
+            function finalizarCompra() {
+                if (carrito.length === 0) {
+                    alert("El carrito está vacío.");
+                    return;
+                }
+
+                const confirmacion = confirm("¿Desea finalizar la compra y enviar la factura por correo?");
+                if (!confirmacion) return;
+
+                // Generar código de verificación único
+                const codigoVerificacion = generarCodigoVerificacion();
+
+                // Construir el contenido del correo
+                let contenidoFactura = `Factura de Compra\n\nCódigo de Verificación: ${codigoVerificacion}\n\nProductos:\n`;
+                let total = 0;
+
+                carrito.forEach(producto => {
+                    contenidoFactura += `${producto.nombre} - $${producto.precio} x ${producto.cantidad}\n`;
+                    total += producto.precio * producto.cantidad;
+                });
+
+                contenidoFactura += `\nTotal: $${total.toFixed(2)}`;
+
+                // Parámetros del correo
+                const emailParams = {
+                    to_email: "johndmm22@gmail.com", // Correo de la empresa
+                    nombre_cliente: "Cliente Ejemplo", // Puedes cambiar esto dinámicamente
+                    codigo_verificacion: codigoVerificacion,
+                    contenido_factura: contenidoFactura
+                };
+
+                // Enviar el correo con la factura en el cuerpo del mensaje
+                emailjs.send("service_hknraxq", "template_ogkqzkq", emailParams) // Reemplaza con tus ID de EmailJS
+                    .then(() => {
+                        alert("Factura enviada correctamente al correo de la empresa.");
+                    })
+                    .catch(error => {
+                        console.error("Error al enviar el correo:", error);
+                        alert("Hubo un problema al enviar la factura.");
+                    });
+
+                // Vaciar el carrito después de la compra
+                carrito = [];
+                guardarCarrito();
+                actualizarCarrito();
+            }
+
+        </script>
+
+        
+
+
+        <!--Cuerpo de la pagina-->
+        <main>
+
+
+
+            <!-- Cámaras de Seguridad --> 
+            <div class="seccion" id="Linea_Productos_Uno">
+                <div class="Titulo">
+                    <h1>Cámaras de Seguridad</h1>
+                </div>
+                <div class="Cuerpo">
+
+                    <div class="contenedor-productos">
+                        <div class="producto" data-id="1" data-nombre="Cámaras HikVision" data-precio="15">
+                            <img src="IMG/Logo_Offishop.png" alt="Cámaras HikVision">
+                            <div class="info">
+                                <h4>Cámaras HikVision</h4>
+                                <p>$15</p>
+                                <button onclick="agregarAlCarrito(1, 'Cámaras HikVision', 15)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                        
+                        <div class="producto" data-id="2" data-nombre="Cámaras Hilook" data-precio="20">
+                            <img src="IMG/castillo.jpg" alt="Cámaras Hilook">
+                            <div class="info">
+                                <h4>Cámaras Hilook</h4>
+                                <p>$20</p>
+                                <button onclick="agregarAlCarrito(2, 'Cámaras Hilook', 20)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="3" data-nombre="Cámaras Ezviz" data-precio="25">
+                            <img src="IMG/castillo.jpg" alt="Cámaras Ezviz">
+                            <div class="info">
+                                <h4>Cámaras Ezviz</h4>
+                                <p>$25</p>
+                                <button onclick="agregarAlCarrito(3, 'Cámaras Ezviz', 25)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="4" data-nombre="Cámaras WI-FI HikVision" data-precio="30">
+                            <img src="IMG/castillo.jpg" alt="Cámaras WI-FI HikVision">
+                            <div class="info">
+                                <h4>Cámaras WI-FI HikVision</h4>
+                                <p>$30</p>
+                                <button onclick="agregarAlCarrito(4, 'Cámaras WI-FI HikVision', 30)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <!-- Se pueden agregar más productos aquí -->
+                    </div>
+                </div>
+                
+                
+            </div>
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Cables -->
+            <div class="seccion" id="Linea_Productos_Dos">
+                    
+                <!-- Título -->
+                <div class="Titulo">
+                    <h1>Cables</h1>
+                </div>
+
+                <!-- Presentación -->
+                <div class="Cuerpo">
+                    
+                    <div class="contenedor-productos">
+                        <div class="producto" data-id="1" data-nombre="Cámaras HikVision" data-precio="15">
+                            <img src="IMG/Logo_Offishop.png" alt="Cámaras HikVision">
+                            <div class="info">
+                                <h4>Cámaras HikVision</h4>
+                                <p>$15</p>
+                                <button onclick="agregarAlCarrito(1, 'Cámaras HikVision', 15)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                        
+                        <div class="producto" data-id="2" data-nombre="Cámaras Hilook" data-precio="20">
+                            <img src="IMG/castillo.jpg" alt="Cámaras Hilook">
+                            <div class="info">
+                                <h4>Cámaras Hilook</h4>
+                                <p>$20</p>
+                                <button onclick="agregarAlCarrito(2, 'Cámaras Hilook', 20)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="3" data-nombre="Cámaras Ezviz" data-precio="25">
+                            <img src="IMG/castillo.jpg" alt="Cámaras Ezviz">
+                            <div class="info">
+                                <h4>Cámaras Ezviz</h4>
+                                <p>$25</p>
+                                <button onclick="agregarAlCarrito(3, 'Cámaras Ezviz', 25)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="4" data-nombre="Cámaras WI-FI HikVision" data-precio="30">
+                            <img src="IMG/castillo.jpg" alt="Cámaras WI-FI HikVision">
+                            <div class="info">
+                                <h4>Cámaras WI-FI HikVision</h4>
+                                <p>$30</p>
+                                <button onclick="agregarAlCarrito(4, 'Cámaras WI-FI HikVision', 30)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <!-- Se pueden agregar más productos aquí -->
+                    </div>
+                </div>
+                
+
+                
+            
+            </div><!-- *************** -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Controladores -->
+            <div class="seccion" id="Linea_Productos_Tres">
+                    
+                <!-- Título -->
+                <div class="Titulo">
+                    <h1>Controladores</h1>
+                </div>
+
+                <!-- Presentación -->
+                <div class="Cuerpo">
+                    
+                    <div class="contenedor-productos">
+                        <div class="producto" data-id="1" data-nombre="Cámaras HikVision" data-precio="15">
+                            <img src="IMG/Logo_Offishop.png" alt="Cámaras HikVision">
+                            <div class="info">
+                                <h4>Cámaras HikVision</h4>
+                                <p>$15</p>
+                                <button onclick="agregarAlCarrito(1, 'Cámaras HikVision', 15)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                        
+                        <div class="producto" data-id="2" data-nombre="Cámaras Hilook" data-precio="20">
+                            <img src="IMG/castillo.jpg" alt="Cámaras Hilook">
+                            <div class="info">
+                                <h4>Cámaras Hilook</h4>
+                                <p>$20</p>
+                                <button onclick="agregarAlCarrito(2, 'Cámaras Hilook', 20)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="3" data-nombre="Cámaras Ezviz" data-precio="25">
+                            <img src="IMG/castillo.jpg" alt="Cámaras Ezviz">
+                            <div class="info">
+                                <h4>Cámaras Ezviz</h4>
+                                <p>$25</p>
+                                <button onclick="agregarAlCarrito(3, 'Cámaras Ezviz', 25)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="4" data-nombre="Cámaras WI-FI HikVision" data-precio="30">
+                            <img src="IMG/castillo.jpg" alt="Cámaras WI-FI HikVision">
+                            <div class="info">
+                                <h4>Cámaras WI-FI HikVision</h4>
+                                <p>$30</p>
+                                <button onclick="agregarAlCarrito(4, 'Cámaras WI-FI HikVision', 30)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <!-- Se pueden agregar más productos aquí -->
+                    </div>
+                </div>
+                
+
+            
+            </div><!-- *************** -->
+
+
+
+
+
+            
+
+
+
+
+
+
+
+        </main>
+
+        <!--Pies de la pagina-->
+        <footer>
+            <p style="color: #0465a9;">&copy; 2025 Mercado Online de OffiShop -/- RIF: J=50119753-9</p>
+        </footer>
+
+    </div>
+ 
+    <!-- Barra lateral derecha para las Redes de OffiShop -->
+    <nav id="menu_contactos">      
+        <h3>Síguenos en...</h3>
+        <ul>
+            <!--Telefono-->
+            <li><a style="background: #0066FF;" href="tel:+584124447744" target="_blank"><i class="fas fa-phone"></i></a></li>
+            <!--FaceBook-->
+            <li><a style="background: #3b5998;" href="https://www.facebook.com/share/16Jx9qFki4/" target="_blank"><i class="fab fa-facebook"></i></a></li>
+            <!--Instagram-->
+            <li><a style="background: #bc2a8d;" href="https://www.instagram.com/offishop_ll?igsh=enQ5OTAyZmNyazdu" target="_blank"><i class="fab fa-instagram"></i></a></li>
+            <!--WhatsApp-->
+            <li><a style="background: #25d366" href="https://api.whatsapp.com/send/?phone=584124447744&text&type=phone_number&app_absent=0&wame_ctl=1" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+            <!--Correo-->
+            <li><a style="background: #5dade2;" href="Offishop.Ventas1@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a></li>
+            <!--TikTok-->
+            <li"><a style="background: #010101;" href="https://www.tiktok.com/@offishop_ll" target="_blank"><i class="fab fa-tiktok"></i></a></li>
+            <!--Twitter--><li></li>
+            <li><a style="background: #1DA1F2;" href="" target="_blank"><i class="fab fa-twitter"></i></a></li>
+        </ul>
+    </nav>
+</body>
+
+</html>
+ 

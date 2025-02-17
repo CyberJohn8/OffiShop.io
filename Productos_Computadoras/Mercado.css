@@ -1,0 +1,868 @@
+    /* General */
+    /* Opcional: Establecer un estilo global para todos los elementos */
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to bottom, #0465a9, rgb(3, 3, 51));
+        color: #000000;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        background-color: #000000;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+
+
+
+
+
+
+
+
+
+    
+    /* Barra lateral de menu */
+    /* Estilo del submenú */
+    /* Estilos generales del menú lateral */
+    #menu_lateral {
+        position: fixed;  /* Asegura que el menú lateral se quede fijo en pantalla */
+        left: -300px; /* Oculto fuera de la pantalla */
+        top: 0;
+        width: 250px;
+        height: 100%;
+        background: #0465a9;
+        transition: left 0.3s ease-in-out;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        padding-top: 20px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        z-index: 1000; /* Asegura que el menú lateral esté por encima de otros elementos */
+        
+        border-radius: 10px;
+    }
+
+    /* Asegúrate de que el carrusel tenga un z-index más bajo que el menú lateral */
+    .Cuerpo_Carusel {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-top: 20px;
+        position: relative; /* Asegura que el carrusel esté posicionado correctamente */
+        z-index: 1; /* Menor que el menú lateral */
+        
+        border-radius: 10px;
+    }
+
+    /* Estilo del botón hamburguesa */
+    .menu-btn {
+        position: fixed;
+        top: 30px;
+        left: 70px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 40px;
+        background-color: rgb(3, 3, 51);
+        color: #ffffff;
+        border-radius: 10px;
+    }
+
+    .menu-btn:hover {
+        background: #000000;
+        transform: scale(1.1);
+    }
+
+    /* Submenú del menú lateral */
+    .submenu_menu_lateral {
+        display: none;
+        list-style: none;
+        padding-left: 15px;
+        background-color: #a09c9c;
+    }
+
+    /* Mostrar el submenú cuando se activa */
+    .submenu_menu_lateral-toggle a {
+        cursor: pointer;
+    }
+
+    /* Estilo de los enlaces en el menú lateral */
+    #menu_lateral a {
+        text-decoration: none;
+        color: #ffffff;
+        display: block;
+        padding: 8px;
+    }
+
+    /* Estilo del submenú */
+    #menu_lateral ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    #menu_lateral li {
+        padding: 10px;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    /*<------------> Encabezado de la pagina <------------>*/
+    /* Encabezado */
+    header {
+        display: flex; /* Usamos flexbox para organizar los elementos */
+        justify-content: space-between; /* Distribuimos los elementos a los lados */
+        align-items: center; /* Alineamos verticalmente los elementos */
+        background-color: #ffffff;
+        color: #ffffff;
+        padding: 15px 10px;
+        border-radius: 8px 8px 0 0;
+
+        /*Centrar imagen*/
+        display: flex; justify-content: center; align-items: center;
+    }
+
+    /* Estilos generales de la imagen del logo */
+    .Logo_Titular {
+        max-height: 100px;
+        width: auto;
+        border-radius: 10px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transiciones suaves para transformaciones y sombras */
+    }
+
+    /* Efecto al pasar el mouse sobre la imagen */
+    .Logo_Titular:hover {
+        transform: scale(1.1); /* Aumenta el tamaño de la imagen */
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Agrega una sombra sutil */
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    
+/* 
+------------------------------------------------------------------------------------------------------------
+Carrito de compras
+------------------------------------------------------------------------------------------------------------
+*/
+/* ==== CONTENEDOR DEL CARRITO ==== */
+#carrito-container {
+    position: fixed;
+    top: 200px; /* Ajusta según la altura del header */
+    left: 20px; /* Se ubica en la parte izquierda de la pantalla */
+    width: 320px;
+    background: #000000; /* Fondo oscuro elegante */
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para mejor apariencia */
+    padding: 15px;
+    display: none; /* Oculto por defecto */
+    z-index: 9999; /* Se asegura que esté encima de otros elementos */
+    border-radius: 10px; /* Bordes redondeados */
+    color: #ffffff; /* Texto blanco para mejor contraste */
+}
+
+/* Cuando el carrito está activo, se muestra con una animación */
+#carrito-container.activo {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ==== ANIMACIÓN DE APARICIÓN ==== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px); /* Efecto de entrada desde arriba */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==== LISTA DE PRODUCTOS EN EL CARRITO ==== */
+#lista-carrito {
+    list-style: none;
+    padding: 0;
+    max-height: 250px; /* Se limita la altura para agregar un scroll */
+    overflow-y: auto; /* Permite desplazarse cuando hay muchos productos */
+}
+
+/* Estilo para cada producto en el carrito */
+#lista-carrito li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid #444; /* Separación entre productos */
+    font-size: 14px;
+}
+
+/* ==== IMAGEN DEL PRODUCTO EN EL CARRITO ==== */
+.imagen-carrito {
+    width: 50px;
+    height: 50px;
+    object-fit: cover; /* Ajusta la imagen sin deformarla */
+    border-radius: 5px; /* Bordes redondeados para mejor apariencia */
+}
+
+/* ==== BOTÓN PARA ELIMINAR UN PRODUCTO DEL CARRITO ==== */
+.eliminar-producto {
+    background: #d9534f; /* Rojo para indicar eliminación */
+    color: #ffffff;
+    border: none;
+    padding: 5px 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background 0.3s ease; /* Transición suave */
+}
+
+.eliminar-producto:hover {
+    background: #c9302c; /* Un tono más oscuro al pasar el mouse */
+}
+
+/* ==== BOTONES PARA AUMENTAR/DISMINUIR CANTIDAD ==== */
+.cantidad-control {
+    display: flex;
+    align-items: center;
+}
+
+.cantidad-control button {
+    border: none;
+    background: #0465a9; /* Azul para los botones de cantidad */
+    color: #ffffff;
+    padding: 5px 8px;
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.cantidad-control button:hover {
+    background: #034985; /* Oscurece el botón al pasar el mouse */
+}
+
+/* ==== BOTÓN PARA ABRIR/CERRAR EL CARRITO ==== */
+#carrito-boton {
+    position: fixed;
+    left: 60px; /* Se coloca en la esquina izquierda */
+    top: 150px;
+    background: #eead11; /* Amarrillo llamativo */
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    /*z-index: 10000; /* Asegura que esté visible */
+}
+
+#carrito-boton:hover {
+    background: #e68900; /* Un tono más oscuro al pasar el mouse */
+}
+
+
+
+
+
+
+/* ==== AJUSTES CELULARES ==== */
+@media (max-width: 720px) {
+    #carrito-container {
+        left: 10px; /* define su separacion con el lado izquierdo */
+        top: 150px; /* define su separacion con el lado superior */
+        max-width: 200px;
+    }
+
+    #lista-carrito {
+        max-height: 180px; /* Se limita la altura para agregar un scroll */
+    }
+
+    #carrito-boton {
+        left: 10px; /* define su separacion con el lado izquierdo */
+        top: 100px; /* define su separacion con el lado superior */
+    } 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Titulo alocado para OFFISHOP
+------------------------------------------------------------------------------------------------------------
+*/
+/* Importamos la fuente Montserrat para que se parezca al logo */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+/* Estilo general del texto "OffiShop" */
+.logo-text {
+    font-family: 'Montserrat', sans-serif; /* Fuente moderna */
+    font-weight: 700;  /* Texto en negrita */
+    font-size: 4rem; /* Tamaño grande */
+    text-transform: uppercase; /* Convertir todo en mayúsculas */
+    letter-spacing: 2px; /* Espaciado entre letras */
+    position: relative;
+    display: inline-block;
+    color: #000000; /* Color del texto */
+    text-decoration: none; /* Eliminar subrayado en el enlace */
+}
+
+/* Cambia el color de la "O" a azul como en el logo */
+.logo-text span {
+    color: #0465a9; /* Azul para la 'O' */
+}
+
+
+/* Lápiz simulando la 'i' */
+.pencil {
+    display: inline-block;
+    width: 12px; /* Grosor del lápiz */
+    height: 50px; /* Altura del lápiz */
+    background: #000000; /* Color del cuerpo del lápiz */
+    position: relative;
+    margin: 0 5px; /* Separación con el texto */
+    border-radius: 2px;
+
+    animation: moveUpDown 1.5s infinite ease-in-out; /* Agregar animación */
+}
+
+/* Punta del lápiz */
+.pencil::before {
+    content: "";
+    position: absolute;
+    top: -10px; /* Ajusta la punta hacia arriba */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #f7cd59; /* Color de la punta del lápiz */
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Forma triangular */
+}
+
+/* Mina del lápiz */
+.pencil::after {
+    content: "";
+    position: absolute;
+    top: -8px; /* Posiciona la mina del lápiz */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    background: black; /* Color de la mina */
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Forma triangular */
+}
+
+
+/* Efecto al pasar el mouse sobre el enlace */
+.logo-text:hover {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra ligera */
+    color: #0465a9; /* Azul más oscuro */
+}
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Animacion para Titulo alocado para OFFISHOP
+------------------------------------------------------------------------------------------------------------
+*/
+
+/* Animación del lápiz */
+@keyframes moveUpDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+/* Aplicamos la animación al texto */
+.logo-text {
+    animation: slideIn 1.5s ease-out forwards; /* Animación de entrada */
+}
+
+/* Efecto de parpadeo para la "O" azul */
+@keyframes blink {
+    50% {
+        color: #0056a7; /* Azul más oscuro */
+    }
+}
+
+.logo-text span {
+    animation: blink 1.5s infinite alternate ease-in-out; /* Efecto de parpadeo */
+}
+
+
+    /*<------------> Cuerpo de la pagina <------------>*/
+    /* Scroll para la tabla */
+    main {
+        display: block;
+        max-height: 360px; /* Ajusta la altura según sea necesario */
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        margin-top: 40px;
+        margin-bottom: 40px;
+
+        scrollbar-width: none; /*Ocultar el scroll*/
+    }
+
+    /*secciones de la pagina*/
+    .seccion {
+        padding: 10px; /* Espaciado interno alrededor de la sección */
+    
+        margin-bottom: 20px; /* Ajusta el valor según tus necesidades para establecer el espacio entre secciones */
+        
+        display: flex; /* Utiliza flexbox para el diseño */
+        flex-direction: column; /* Organiza los elementos en columna */
+        justify-content: space-between; /* Distribuye el espacio uniformemente entre los elementos hijos */
+
+        background-color: #0465a9; /*Color de fondo*/
+        color: #ffffff;
+
+        
+        border-radius: 10px;
+    }
+    
+
+    /* Estilos generales para el título */
+    .Titulo h1 {
+        color: #ffffff; /* Color original */
+        font-size: 36px; /* Tamaño normal */
+        text-align: center; /* Centrar el texto */
+        font-weight: bold; /* Negrita */
+        text-transform: uppercase; /* Mayúsculas */
+        transition: font-size 0.3s ease-in-out; /* Suaviza los cambios */
+        
+        font-size: 28px; /* Reduce el tamaño del texto */
+    }
+
+    /*<------------> Footer de la pagina <------------>*/
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 10px;
+        background-color: #ffffff;
+        color: #ffffff;
+        border-radius: 0 0 8px 8px;
+        font-size: 0.9em;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Barra de menu de las redes
+------------------------------------------------------------------------------------------------------------
+*/
+    /**/
+    /*Barra de menu de las redes*/
+    #menu_contactos {
+        position: fixed; /**/
+        right: 0;         /*Fija la barra en parte derecha*/
+        top: 10px;         /* Posicionar en el centro verticalmente */
+        height: 100%;    
+        width: 50px;
+        background: #0465a9;
+        padding: 25px;   /*espacio interno*/
+
+        overflow-y: inherit;
+        overflow-x: hidden;
+
+        scrollbar-width: none; /*Ocultar el scroll*/
+
+        border-radius: 10px;
+
+    }
+
+    #menu_contactos h3 {
+        color: #ffffff;
+        font-size: 16px; /* Reduce el tamaño del texto */
+    }
+
+    #menu_contactos ul {
+        list-style: none; /*eliminar los puntos de la lista*/
+        padding: 0;
+    }
+
+    #menu_contactos li {
+        margin-bottom: 20px; /*espacio entre los elementos de la barra*/
+    }
+
+    #menu_contactos a {
+        text-decoration: none; /*eliminar el subrayado del texto*/
+        color: rgb(1, 1, 59);         /*definir el color del texto*/
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 50%;
+        font-size: 24px;
+        transition: background 0.3s, transform 0.2s;
+        
+        border-radius: 15px 15px 15px 15px;
+    }
+
+    #menu_contactos a:hover {
+        /*background: #0465a9; /*Cambiar el color de fondo del icono al contacto*/
+        transform: scale(1.1);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Carusel para los productos
+------------------------------------------------------------------------------------------------------------
+*/
+.contenedor-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.producto {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.producto:hover {
+    transform: scale(1.05);
+}
+
+.producto img {
+    width: 50%;
+    height: 40%;
+    object-fit: cover;
+}
+
+.info {
+    padding: 15px;
+    color: #000000;
+}
+
+.info h4 {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.info p {
+    color: #333232;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.info button {
+    background-color: #0465a9;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.info button:hover {
+    background-color: #064470;
+}
+
+
+/* ==== AJUSTES CELULARES ==== */
+@media (max-width: 720px) {
+    .contenedor-productos {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 8fr));
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .producto img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+    
+    .info {
+        padding: 5px;
+    }
+    
+    .info h4 {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+    
+    .info p {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Formato para telefonos
+------------------------------------------------------------------------------------------------------------
+*/
+/* Media Queries para dispositivos móviles 290px  580px */
+@media (max-width: 720px) {
+    /*Barra lateral de menu*/
+    #menu_lateral {
+        width: 200px; /* Hace que el menú sea más visible */
+        left: -200px; /* Mantiene el menú oculto */
+    }
+
+    /* Ajuste del texto y tamaño */
+    #menu_lateral a {
+        font-size: 14px; /* Reduce el tamaño del texto */
+        padding: 8px; /* Ajusta el espacio interno */
+    }
+
+    .menu-btn {
+        top: 30px;
+        left: 20px;
+        font-size: 30px;
+    }
+
+    /*Barra de menu de las redes*/
+    #menu_contactos {
+        max-height: 480px;    
+        width: 50px;
+        padding: 10px;   /*espacio interno*/
+    }
+    
+    #menu_contactos h3 {
+        font-size: 12px; /* Reduce el tamaño del texto */
+    }
+
+    #menu_contactos ul {
+        list-style: none; /*eliminar los puntos de la lista*/
+        padding: 0;
+    }
+
+    #menu_contactos li {
+        margin-bottom: 20px; /*espacio entre los elementos de la barra*/
+    }
+
+    #menu_contactos a {
+        width: 40px;
+        height: 40px;
+        
+        border-radius: 80%;
+        font-size: 18px;
+    }
+
+    .logo-text {
+        font-size: 28px; /* Reducir tamaño en pantallas pequeñas */
+    }
+
+    /* Estilos para el lápiz en el logo */
+    .pencil {
+        width: 8px;
+        height: 20px;
+        border-radius: 2px;
+        position: relative;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /*tabla contenedor de objetos*/
+    .container {
+        max-width: 57%;
+        margin: auto;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    /*Contenedor de objetos*/
+    main {
+        max-height: 100%; /* Ajusta la altura según sea necesario */
+        max-width: 100%;  /* Ajusta la anchura según sea necesario */
+
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /*secciones de la pagina*/
+    .seccion {
+        padding: 5px; /* Espaciado interno alrededor de la sección */
+        
+        font-size: 16x; /* Reducir tamaño en pantallas pequeñas */
+    }
+
+    .seccion .Titulo h1 {        
+        font-size: 18px; /* Reducir tamaño en pantallas pequeñas */
+    }
+
+
+    .Cuerpo {
+        padding: 5px; /* Espaciado interno alrededor de la sección */
+    }
+
+    .Titulo h1 {
+        font-size: 18px; /* Reduce el tamaño del texto */
+    }
+
+    /*foto del logo empresarial*/
+    .Logo_Titular {
+        max-height: 70px;
+        width: auto;
+    }
+
+    /*Ajustar los titulos*/
+    .h1 {
+        size: 8px;
+    }
+
+    /* Contenedor del carrusel */
+    .carousel-container {
+        width: 97.3%;
+        border-radius: 10px;
+    }
+
+}
