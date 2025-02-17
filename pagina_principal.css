@@ -921,7 +921,7 @@ body.modo-computadora #menu_lateral {
 
 body.modo-computadora main {
     max-height: none !important; /* Eliminar restricciones de altura */
-    max-width: 100% !important; /* Usar todo el ancho disponible */
+    max-width: 70% !important; /* Usar todo el ancho disponible */
 }
 
 /* Restaurar otros elementos que se ocultan en móviles */
