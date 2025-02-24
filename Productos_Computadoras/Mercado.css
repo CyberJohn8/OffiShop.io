@@ -1,0 +1,1588 @@
+    /* General */
+    /* Opcional: Establecer un estilo global para todos los elementos */
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: radial-gradient(circle at center, 
+        #004080 10%,   /* Azul principal */
+        #0074CC 30%,   /* Azul brillante */
+        #1E90FF 50%,   /* Azul medio */
+        #0465a9 70%,   /* Azul oscuro */
+        #004080 90%    /* Repetimos el azul principal */
+        );
+        background-size: 200% 200%;
+        animation: spinBackground 6s linear infinite;
+        
+        color: #000000;
+    
+    }
+
+    /* Animación para hacer girar el fondo */
+    @keyframes spinBackground {
+        0% { background-position: 0% 0%; }
+        25% { background-position: 50% 50%; }
+        50% { background-position: 100% 100%; }
+        75% { background-position: 50% 50%; }
+        100% { background-position: 0% 0%; }
+    }
+    
+
+
+
+
+
+
+
+
+/*
+Barra de busqueda
+*/
+/* Contenedor del buscador */
+#busqueda-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px; /* Espacio entre el input y el botón */
+    width: 80%;
+    margin-top: 5px;
+}
+
+/* Estilos para la barra de búsqueda */
+#searchInput {
+    flex: 1; /* Hace que el input ocupe todo el espacio disponible */
+    padding: 5px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+#searchInput:focus {
+    border-color: #0465a9;
+    outline: none;
+}
+
+/* Botón de búsqueda (Lupa) */
+#searchButton {
+    background-color: #0465a9;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#searchButton:hover {
+    background-color: #034985;
+}
+
+/* Contenedor de navegación de búsqueda */
+#search-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+/* Botones de navegación */
+#prevResult, #nextResult {
+    background-color: #0465a9;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#prevResult:hover, #nextResult:hover {
+    background-color: #034985;
+}
+
+/* Contador de resultados */
+#resultCounter {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000000;
+}
+
+/* Estilos para el resaltado de búsqueda */
+.highlight {
+    background-color: #ccc;
+    color: #000000;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* =================== RESPONSIVE: AJUSTES PARA MÓVILES =================== */
+@media (max-width: 600px) {
+    #busqueda-container {
+        flex-direction: row; /* Mantiene el input y la lupa en fila */
+    }
+
+    #searchInput {
+        font-size: 0.9rem;
+    }
+
+    #searchButton {
+        font-size: 0.6rem;
+        padding: 8px 12px; /* Ajuste para que no se vea muy grande en móvil */
+    }
+
+    /* Botones de navegación */
+    #prevResult, #nextResult {
+        font-size: 6px;
+    }
+
+    #resultCounter {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 300px ) {
+    #busqueda-container {
+        flex-direction: row; /* Mantiene el input y la lupa en fila */
+        width: 80%;
+    }
+
+    #searchInput {
+        font-size: 0.9rem;
+    }
+
+    #searchButton {
+        font-size: 10px;
+        padding: 4px 6px; /* Ajuste para que no se vea muy grande en móvil */
+    }
+
+    /* Botones de navegación */
+    #prevResult, #nextResult {
+        font-size: 5px;
+    }
+
+    #resultCounter {
+        font-size: 10px;
+    }
+}
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    /* Barra lateral de menu */
+    /* Estilo del submenú */
+    /* Estilos generales del menú lateral */
+    #menu_lateral {
+        position: fixed;  /* Asegura que el menú lateral se quede fijo en pantalla */
+        left: -300px; /* Oculto fuera de la pantalla */
+        top: 0;
+        width: 250px;
+        height: 100%;
+        background: #0465a9;
+        transition: left 0.3s ease-in-out;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        padding-top: 20px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        z-index: 1000; /* Asegura que el menú lateral esté por encima de otros elementos */
+        
+        border-radius: 10px;
+    }
+
+    /* Asegúrate de que el carrusel tenga un z-index más bajo que el menú lateral */
+    .Cuerpo_Carusel {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-top: 20px;
+        position: relative; /* Asegura que el carrusel esté posicionado correctamente */
+        z-index: 1; /* Menor que el menú lateral */
+        
+        border-radius: 10px;
+    }
+
+    /* Estilo del botón hamburguesa */
+    .menu-btn {
+        position: fixed;
+        top: 40px;
+        left: 40px; /* Fija la barra a la izquierda */
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 20px; /* Fija el tamaño de la letra y por ende del boton */
+        background: radial-gradient(circle at center, 
+        #0465a9 10%,   /* Azul principal */
+        #1E90FF 30%,   /* Azul brillante */
+        #0074CC 50%,   /* Azul medio */
+        #004080 70%,   /* Azul oscuro */
+        #0465a9 90%    /* Repetimos el azul principal */
+        );
+        color: #ffffff;
+        
+        border-radius: 10px;
+    }
+
+    .menu-btn:hover {
+        background: radial-gradient(circle at center, 
+        #004080 10%,   /* Azul principal */
+        #0074CC 30%,   /* Azul brillante */
+        #1E90FF 50%,   /* Azul medio */
+        #0465a9 70%,   /* Azul oscuro */
+        #004080 90%    /* Repetimos el azul principal */
+        );
+        transform: scale(1.1);
+    }
+
+    /* Submenú del menú lateral */
+    .submenu_menu_lateral {
+        display: none;
+        list-style: none;
+        padding-left: 15px;
+        background-color: #a09c9c;
+    }
+
+    /* Mostrar el submenú cuando se activa */
+    .submenu_menu_lateral-toggle a {
+        cursor: pointer;
+    }
+
+    /* Estilo de los enlaces en el menú lateral */
+    #menu_lateral a {
+        text-decoration: none;
+        color: #ffffff;
+        display: block;
+        padding: 8px;
+    }
+
+    /* Estilo del submenú */
+    #menu_lateral ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    #menu_lateral li {
+        padding: 10px;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    /*<------------> Encabezado de la pagina <------------>*/
+    /* =================== ESTILOS DEL HEADER =================== */
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #ffffff;
+        padding: 5px;
+        border-bottom: 3px solid #0465a9;
+        /*height: 100px; /**/
+        border-radius: 10px;
+    }
+
+    /* Estilos generales de la imagen del logo */
+    .Logo_Titular {
+        max-height: 100px;
+        width: auto;
+        border-radius: 10px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transiciones suaves para transformaciones y sombras */
+    }
+
+    /* Efecto al pasar el mouse sobre la imagen */
+    .Logo_Titular:hover {
+        transform: scale(1.1); /* Aumenta el tamaño de la imagen */
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Agrega una sombra sutil */
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+/* =================== ESTILOS GENERALES DEL CARRITO =================== */
+#carrito-container {
+    position: fixed;
+    top: 30px;
+    right: 100px;
+    width: 380px;
+    max-height: 600px;
+    background: #000000;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    display: none;
+    z-index: 9999;
+    border-radius: 10px;
+    color: #ffffff;
+}
+
+/* Aparece con animación */
+#carrito-container.activo {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =================== LISTA DE PRODUCTOS =================== */
+#lista-carrito {
+    list-style: none;
+    padding: 0;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+#lista-carrito li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid #444;
+    font-size: 14px;
+}
+
+/* =================== BOTÓN ELIMINAR PRODUCTO =================== */
+.eliminar-producto {
+    background: #d9534f;
+    color: #ffffff;
+    border: none;
+    padding: 5px 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.eliminar-producto:hover {
+    background: #c9302c;
+}
+
+/* =================== CONTROLES DE CANTIDAD =================== */
+.cantidad-control {
+    display: flex;
+    align-items: center;
+}
+
+.cantidad-control button {
+    border: none;
+    background: #0465a9;
+    color: #ffffff;
+    padding: 5px 8px;
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.cantidad-control button:hover {
+    background: #034985;
+}
+
+/* =================== BOTÓN DEL CARRITO =================== */
+#carrito-boton {
+    position: fixed;
+    right: 20px;
+    top: 30px;
+    background: #eead11;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+#carrito-boton:hover {
+    background: #e68900;
+}
+
+/* =================== RESPONSIVE: AJUSTES PARA CELULARES =================== */
+@media (max-width: 600px) {
+    #carrito-container {
+        right: 20px;
+        top: 80px;
+        width: 300px;
+    }
+
+    #lista-carrito {
+        max-height: 180px;
+    }
+
+    #carrito-boton {
+        right: 10px;
+        top: 30px;
+    }
+
+    .eliminar-producto {
+        font-size: 10px;
+    }
+
+    .cantidad-control button {
+        font-size: 10px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Media Queries para dispositivos móviles 300px */
+@media (max-width: 300px) {
+    #carrito-container {
+        right: 10px;
+        top: 80px;
+        width: 230px;
+    }
+
+    #lista-carrito {
+        max-height: 180px;
+    }
+
+    #carrito-boton {
+        right: 5px;
+        top: 30px;
+        font-size: 12px;
+
+            
+        position: fixed;
+        border: none;
+        padding: 5px 5px;
+        cursor: pointer;
+        border-radius: 20px;
+        transition: background 0.3s ease;
+    }
+
+    .eliminar-producto {
+        font-size: 10px;
+    }
+
+    .cantidad-control button {
+        font-size: 10px;
+    }
+}
+
+
+
+
+
+
+
+
+/* =================== FORMULARIO DE USUARIO =================== */
+/* Botón de retroceso */
+.btn-retroceso {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.btn-retroceso i {
+    font-size: 18px;
+}
+
+.btn-retroceso:hover {
+    background-color: #0465a9;
+}
+
+
+.Formulario_Contenedor {
+    width: 80%; /* Ajusta la anchura según sea necesario para el contenedor principal */
+    height: 550px; /* Ajusta la altura según sea necesario para el contenedor principal */
+    margin: auto;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+/* Contenedor principal */
+.form-container {
+    max-width: 500px;
+    width: 80%;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Títulos */
+h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Campos del formulario */
+label {
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-top: 10px;
+}
+
+input, textarea {
+    width: 98%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Campo de empresa */
+#campo-empresa {
+    margin-top: 15px;
+}
+
+#campo-empresa input {
+    width: 98%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+
+/* Botón de envío */
+/* Botón de envío */
+.Boton_Enviar_Orden {
+    width: 100%;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s ease;
+}
+
+.Boton_Enviar_Orden:hover {
+    background-color: #0465a9;
+}
+
+
+/* Mensajes de error o éxito */
+.mensaje {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.error {
+    color: red;
+}
+
+.exito {
+    color: green;
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+    .Formulario_Contenedor {
+        width: 80%; /* Ajusta la anchura según sea necesario para el contenedor principal */
+        height: 550px; /* Ajusta la altura según sea necesario para el contenedor principal */
+    }
+    /* Contenedor principal */
+    .form-container {
+        max-width: 500px;
+        width: 80%;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input, textarea {
+        width: 95%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    #campo-empresa input {
+        width: 95%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+}
+
+/* Media Queries para dispositivos móviles 400px */
+@media (max-width: 400px) {
+
+    .Formulario_Contenedor {
+        width: 80%; /* Ajusta la anchura según sea necesario para el contenedor principal */
+        height: 580px; /* Ajusta la altura según sea necesario para el contenedor principal */
+    }
+    /* Contenedor principal */
+    .form-container {
+        max-width: 500px;
+        width: 80%;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input, textarea {
+        width: 95%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    #campo-empresa input {
+        width: 95%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Titulo alocado para OFFISHOP
+------------------------------------------------------------------------------------------------------------
+*/
+/* Importamos la fuente Montserrat para que se parezca al logo */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+/* Estilo general del texto "OffiShop" */
+.logo-text {
+    font-family: 'Montserrat', sans-serif; /* Fuente moderna */
+    font-weight: 700;  /* Texto en negrita */
+    font-size: 4rem; /* Tamaño grande */
+    text-transform: uppercase; /* Convertir todo en mayúsculas */
+    letter-spacing: 2px; /* Espaciado entre letras */
+    position: relative;
+    display: inline-block;
+    color: #000000; /* Color del texto */
+    text-decoration: none; /* Eliminar subrayado en el enlace */
+}
+
+/* Cambia el color de la "O" a azul como en el logo */
+.logo-text span {
+    color: #0465a9; /* Azul para la 'O' */
+}
+
+
+/* Lápiz simulando la 'i' */
+.pencil {
+    display: inline-block;
+    width: 12px; /* Grosor del lápiz */
+    height: 50px; /* Altura del lápiz */
+    background: #000000; /* Color del cuerpo del lápiz */
+    position: relative;
+    margin: 0 5px; /* Separación con el texto */
+    border-radius: 2px;
+
+    animation: moveUpDown 1.5s infinite ease-in-out; /* Agregar animación */
+}
+
+/* Punta del lápiz */
+.pencil::before {
+    content: "";
+    position: absolute;
+    top: -10px; /* Ajusta la punta hacia arriba */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #f7cd59; /* Color de la punta del lápiz */
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Forma triangular */
+}
+
+/* Mina del lápiz */
+.pencil::after {
+    content: "";
+    position: absolute;
+    top: -8px; /* Posiciona la mina del lápiz */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    background: black; /* Color de la mina */
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Forma triangular */
+}
+
+
+/* Efecto al pasar el mouse sobre el enlace */
+.logo-text:hover {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra ligera */
+    color: #0465a9; /* Azul más oscuro */
+}
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Animacion para Titulo alocado para OFFISHOP
+------------------------------------------------------------------------------------------------------------
+*/
+
+/* Animación del lápiz */
+@keyframes moveUpDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+/* Aplicamos la animación al texto */
+.logo-text {
+    animation: slideIn 1.5s ease-out forwards; /* Animación de entrada */
+}
+
+/* Efecto de parpadeo para la "O" azul */
+@keyframes blink {
+    50% {
+        color: #0056a7; /* Azul más oscuro */
+    }
+}
+
+.logo-text span {
+    animation: blink 1.5s infinite alternate ease-in-out; /* Efecto de parpadeo */
+}
+
+
+    /*<------------> Cuerpo de la pagina <------------>*/
+    .container {
+        width: 1190px; /* Ajusta la anchura según sea necesario para el contenedor principal */
+        height: 620px; /* Ajusta la altura según sea necesario para el contenedor principal */
+        margin-left: 10px; /* Lo alinea a la izquierda */
+        margin-right: auto; /* Mantiene el resto del diseño */
+        margin-top: 10px; /* Lo separa del tope */
+        padding: 20px;
+        background-color: #000000;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Scroll para la tabla */
+    main {
+        display: block;
+        height: 380px; /* Ajusta la altura según sea necesario */
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+        scrollbar-width: none; /*Ocultar el scroll*/
+        
+        border-radius: 10px;
+    }
+
+    /*secciones de la pagina*/
+    .seccion {
+        margin: auto;
+        
+        padding: 20px; /* Espaciado interno alrededor de la sección */
+    
+        margin-bottom: 20px; /* Ajusta el valor según tus necesidades para establecer el espacio entre secciones */
+        
+        display: flex; /* Utiliza flexbox para el diseño */
+        flex-direction: column; /* Organiza los elementos en columna */
+        justify-content: space-between; /* Distribuye el espacio uniformemente entre los elementos hijos */
+
+        color: #ffffff;
+
+        
+        border-radius: 10px;
+
+
+        background: radial-gradient(circle at center, 
+        #004080 10%,   /* Azul principal */
+        #0074CC 30%,   /* Azul brillante */
+        #1E90FF 50%,   /* Azul medio */
+        #0465a9 70%,   /* Azul oscuro */
+        #004080 90%    /* Repetimos el azul principal */
+        );
+        background-size: 200% 200%;
+        animation: spinBackground 6s linear infinite;
+    }
+    
+
+    /* Estilos generales para el título */
+    .Titulo h1 {
+        color: #ffffff; /* Color original */
+        font-size: 36px; /* Tamaño normal */
+        text-align: center; /* Centrar el texto */
+        font-weight: bold; /* Negrita */
+        text-transform: uppercase; /* Mayúsculas */
+        transition: font-size 0.3s ease-in-out; /* Suaviza los cambios */
+        
+        font-size: 28px; /* Reduce el tamaño del texto */
+    }
+
+    /*<------------> Footer de la pagina <------------>*/
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 10px;
+        background-color: #ffffff;
+        color: #ffffff;
+        border-radius: 0 0 8px 8px;
+        font-size: 0.9em;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Barra de menu de las redes
+------------------------------------------------------------------------------------------------------------
+*/
+    /**/
+    /*Barra de menu de las redes*/
+    #menu_contactos {
+        position: fixed;
+        right: 10px; /* Fija la barra a la derecha */
+        top: 57%; /* Lo posiciona en el centro verticalmente */
+        transform: translateY(-50%); /* Ajusta para centrarlo completamente */
+        height: 500px;
+        width: 65px; /* Aumenta un poco el ancho para mejor visibilidad */
+        padding: 20px 10px; /* Reduce el espacio interno para compactar */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los elementos horizontalmente */
+        justify-content: center; /* Asegura que los elementos queden equilibrados */
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: none; /* Ocultar el scroll */
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Añade una sombra para destacar */
+
+        background-color: #0465a9;
+    }
+
+    #menu_contactos h3 {
+        color: #ffffff;
+        font-size: 16px; /* Reduce el tamaño del texto */
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 500;
+    }
+
+    #menu_contactos ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los iconos */
+    }
+
+    #menu_contactos li {
+        margin-bottom: 15px; /* Espacio uniforme entre los elementos */
+    }
+
+    #menu_contactos a {
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        color: #ffffff;         /*definir el color del texto*/
+
+        text-decoration: none;
+        border-radius: 50%;
+        font-size: 24px;
+        transition: background 0.3s, transform 0.2s;
+    }
+
+    #menu_contactos a:hover {
+        transform: scale(1.1);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Carusel para los productos
+------------------------------------------------------------------------------------------------------------
+*/
+.contenedor-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.producto {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.producto:hover {
+    transform: scale(1.05);
+}
+
+.producto img {
+    width: 50%;
+    height: 40%;
+    object-fit: cover;
+}
+
+.info {
+    padding: 15px;
+    color: #000000;
+}
+
+.info h4 {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.info p {
+    color: #333232;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.info button {
+    background-color: #0465a9;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.info button:hover {
+    background-color: #064470;
+}
+
+
+/* ==== AJUSTES CELULARES ==== */
+@media (max-width: 720px) {
+    .contenedor-productos {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 8fr));
+        gap: 10px;
+        padding: 0px;
+    }
+
+    .producto img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+    
+    .info {
+        padding: 5px;
+    }
+    
+    .info h4 {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+    
+    .info p {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+}
+
+/* Media Queries para dispositivos móviles 300px */
+@media (max-width: 300px) {
+
+    .contenedor-productos {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 8fr));
+        gap: 5px;
+        padding: 10px;
+    }
+
+    .producto img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+    
+    .info {
+        padding: 5px;
+    }
+    
+    .info h4 {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+    
+    .info p {
+        font-size: 12px;
+        margin: 5px 0;
+    }
+
+    .info button {
+        border: none;
+        padding: 5px 5px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 12px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+------------------------------------------------------------------------------------------------------------
+Formato para telefonos
+------------------------------------------------------------------------------------------------------------
+*/
+/* Media Queries para dispositivos móviles 290px  580px */
+@media (max-width: 720px) {
+    /*Barra lateral de menu*/
+    #menu_lateral {
+        width: 200px; /* Hace que el menú sea más visible */
+        left: -200px; /* Mantiene el menú oculto */
+    }
+
+    /* Ajuste del texto y tamaño */
+    #menu_lateral a {
+        font-size: 14px; /* Reduce el tamaño del texto */
+        padding: 8px; /* Ajusta el espacio interno */
+    }
+
+    /* Estilo del botón hamburguesa */
+    .menu-btn {
+        top: 80px;
+        left: 20px; /* Fija la barra a la izquierda */
+        font-size: 16px; /* Fija el tamaño de la letra y por ende del boton */
+        
+        border-radius: 10px;
+    }
+
+
+    /*Barra de menu de las redes*/
+    #menu_contactos {
+        max-height: 480px;    
+        width: 50px;
+        padding: 10px;   /*espacio interno*/
+    }
+    
+    #menu_contactos h3 {
+        font-size: 12px; /* Reduce el tamaño del texto */
+    }
+
+    #menu_contactos ul {
+        list-style: none; /*eliminar los puntos de la lista*/
+        padding: 0;
+    }
+
+    #menu_contactos li {
+        margin-bottom: 20px; /*espacio entre los elementos de la barra*/
+    }
+
+    #menu_contactos a {
+        width: 40px;
+        height: 40px;
+        
+        border-radius: 80%;
+        font-size: 18px;
+    }
+
+    .logo-text {
+        font-size: 28px; /* Reducir tamaño en pantallas pequeñas */
+    }
+
+    /* Estilos para el lápiz en el logo */
+    .pencil {
+        width: 8px;
+        height: 20px;
+        border-radius: 2px;
+        position: relative;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /*tabla contenedor de objetos*/
+    .container {
+        width: 75%;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    /*Contenedor de objetos*/
+    main {
+        max-width: 100%;  /* Ajusta la anchura según sea necesario */
+
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /*secciones de la pagina*/
+    .seccion {
+        padding: 5px; /* Espaciado interno alrededor de la sección */
+    }
+
+    .seccion .Titulo h1 {        
+        font-size: 18px; /* Reducir tamaño en pantallas pequeñas */
+    }
+
+
+    .Cuerpo {
+        padding: 5px; /* Espaciado interno alrededor de la sección */
+    }
+
+    .Titulo h1 {
+        font-size: 18px; /* Reduce el tamaño del texto */
+    }
+
+    /*foto del logo empresarial*/
+    .Logo_Titular {
+        max-height: 70px;
+        width: auto;
+    }
+
+    /*Ajustar los titulos*/
+    .h1 {
+        size: 8px;
+    }
+
+    /* Contenedor del carrusel */
+    .carousel-container {
+        width: 97.3%;
+        border-radius: 10px;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Media Queries para dispositivos móviles 400px */
+@media (max-width: 400px) {
+
+    /*Barra lateral de menu*/
+    #menu_lateral {
+        width: 200px; /* Hace que el menú sea más visible */
+        left: -200px; /* Mantiene el menú oculto */
+    }
+
+    /* Ajuste del texto y tamaño */
+    #menu_lateral a {
+        font-size: 14px; /* Reduce el tamaño del texto */
+        padding: 8px; /* Ajusta el espacio interno */
+    }
+
+    
+
+
+    /*Barra de menu de las redes*/
+    #menu_contactos {
+        max-height: 480px;    
+        width: 40px;
+        padding: 10px;   /*espacio interno*/
+    }
+    
+    #menu_contactos h3 {
+        font-size: 12px; /* Reduce el tamaño del texto */
+    }
+
+    #menu_contactos ul {
+        list-style: none; /*eliminar los puntos de la lista*/
+        padding: 0;
+    }
+
+    #menu_contactos li {
+        margin-bottom: 20px; /*espacio entre los elementos de la barra*/
+    }
+
+    #menu_contactos a {
+        width: 40px;
+        height: 40px;
+        
+        border-radius: 80%;
+        font-size: 18px;
+    }
+
+
+
+
+
+
+
+
+    /*tabla contenedor de objetos*/
+    .container {
+        width: 73%;
+        height: 100%;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    /*Contenedor de objetos*/
+    main {
+        max-width: 100%;  /* Ajusta la anchura según sea necesario */
+
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /*secciones de la pagina*/
+    .seccion {
+        padding: 5px; /* Espaciado interno alrededor de la sección */
+    }
+
+    .Cuerpo {
+        padding: 5px; /* Espaciado interno alrededor de la sección */
+        width: 100%;
+        font-size: 14px; /* Reduce el tamaño del texto */
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Media Queries para dispositivos móviles 300px */
+@media (max-width: 300px) {
+
+    /*Barra lateral de menu*/
+    #menu_lateral {
+        width: 200px; /* Hace que el menú sea más visible */
+        left: -200px; /* Mantiene el menú oculto */
+    }
+
+    /* Ajuste del texto y tamaño */
+    #menu_lateral a {
+        font-size: 14px; /* Reduce el tamaño del texto */
+        padding: 8px; /* Ajusta el espacio interno */
+    }
+
+    /* Estilo del botón hamburguesa */
+    .menu-btn {
+        top: 90px;
+        left: 15px; /* Fija la barra a la izquierda */
+        font-size: 12px; /* Fija el tamaño de la letra y por ende del boton */
+        
+        border-radius: 14px;
+    }
+    
+
+
+    /*Barra de menu de las redes*/
+    #menu_contactos {
+        max-height: 480px;    
+        width: 30px;
+        padding: 10px;   /*espacio interno*/
+    }
+    
+    #menu_contactos h3 {
+        font-size: 10px; /* Reduce el tamaño del texto */
+    }
+
+    #menu_contactos ul {
+        list-style: none; /*eliminar los puntos de la lista*/
+        padding: 0;
+    }
+
+    #menu_contactos li {
+        margin-bottom: 20px; /*espacio entre los elementos de la barra*/
+    }
+
+    #menu_contactos a {
+        width: 30px;
+        height: 30px;
+        
+        border-radius: 80%;
+        font-size: 16px;
+    }
+
+
+
+
+
+
+
+
+    /*tabla contenedor de objetos*/
+    .container {
+        width: 68%;
+        height: 700px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    /*Contenedor de objetos*/
+    main {
+        max-width: 100%;  /* Ajusta la anchura según sea necesario */
+        height: 480px;
+
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /*secciones de la pagina*/
+    .seccion {
+        padding: 5px; /* Espaciado interno alrededor de la sección */
+    }
+
+    .Cuerpo {
+        padding: 5px; /* Espaciado interno alrededor de la sección */
+        width: 100%;
+        font-size: 14px; /* Reduce el tamaño del texto */
+    }
+
+    footer {
+        text-align: center;
+        padding: 2px;
+        border-radius: 0 0 8px 8px;
+        font-size: 0.9em;
+    }
+    
+    .footer p {
+        font-size: 8px;
+    }
+
+}
