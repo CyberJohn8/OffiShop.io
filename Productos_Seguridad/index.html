@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Título de la ventana del navegador -->
+    <title>OffiShop - Seguridad</title>
+
+    <!-- Iconos para la página -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Tipo de letra Popins para la página -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+    <!-- Link de estilo css -->
+    <link rel="stylesheet" href="Mercado.css">
+
+    <!-- Link de librería jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+
+    <!-- JavaScript para los Productos en el carrito y generación de la factura -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Botón de hamburguesa -->
+    <button class="menu-btn" id="menu-toggle">☰</button>
+
+    <!-- Menú lateral -->
+    <nav id="menu_lateral">
+        <ul>
+            <li class="submenu_menu_lateral-toggle">
+            <a href="#" id="productos-toggle">Catálogo</a>
+            <ul class="submenu_menu_lateral">
+                <li><a href="../Productos_Computadoras/index.html">Computadoras</a></li>
+                <li><a href="../Productos_Computadoras/index.html">Periféricos</a></li>
+                <li><a href="../Productos_Computadoras/index.html">UPS</a></li>
+                <li><a href="../Productos_Computadoras/index.html">Almacenamiento</a></li>
+                <li><a href="../Productos_Redes/index.html">Redes</a></li>
+                <li><a href="../Productos_Impresoras/index.html">Impresoras</a></li>
+                <li><a href="../Productos_Impresoras/index.html">Consumibles de Impresoras</a></li>
+                <li><a href="../Productos_Impresoras_Fiscales/index.html">Impresoras Fiscales</a></li>
+            </ul>
+            </li>
+            <li><h4 style="color: #ffffff;">Página Seguridad</h4></li>
+            <li><a href="#Linea_Productos_Uno">Camaras de Seguridad</a></li>
+            <li><a href="#Linea_Productos_Dos">DVR y Videos BALUN</a></li>
+            <li><a href="#Linea_Productos_Tres">Fuentes de Poder</a></li>
+            <li><a href="#Linea_Productos_Cuatro">Accesorios</a></li>
+        </ul>
+    </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        let menuToggle = document.getElementById("menu-toggle");
+        let menuLateral = document.getElementById("menu_lateral");
+        let productosToggle = document.getElementById("productos-toggle");
+        let submenu = productosToggle.nextElementSibling;
+
+            // Mostrar/ocultar menú lateral
+            menuToggle.addEventListener("click", function () {
+                menuLateral.style.left = menuLateral.style.left === "0px" ? "-100%" : "0px";
+            });
+
+            // Mostrar/ocultar submenú de productos
+            productosToggle.addEventListener("click", function (event) {
+                event.preventDefault();
+                submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+            });
+
+            // Cerrar menú si se hace clic fuera
+            document.addEventListener("click", function (event) {
+                if (!menuLateral.contains(event.target) && !menuToggle.contains(event.target)) {
+                    menuLateral.style.left = "-100%";
+                }
+            });
+        });
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="container">
+
+        <!--Encabezado de la pagina-->
+        <header>
+            <a href="../index.html" class="logo-text">
+                <span>O</span>ff<div class="pencil"></div><span>S</span>hop
+            </a>     
+
+            <div id="busqueda-container">
+                <input type="text" id="searchInput" placeholder="Buscar...">
+                <button id="searchButton">🔍</button>
+                <div id="search-navigation" style="display: none;">
+                    <button id="prevResult">⬅</button>
+                    <span id="resultCounter">0/0</span>
+                    <button id="nextResult">➡</button>
+                </div>
+            </div>
+            
+            
+            
+            <script>
+                let currentIndex = 0;
+                let foundElements = [];
+            
+                document.getElementById('searchButton').addEventListener('click', function() {
+                    const searchTerm = document.getElementById('searchInput').value.trim();
+                    if (searchTerm === '') return;
+            
+                    clearHighlights();
+                    searchInCurrentPage(searchTerm);
+                });
+            
+                document.getElementById('prevResult').addEventListener('click', function() {
+                    if (foundElements.length > 0) {
+                        currentIndex = (currentIndex - 1 + foundElements.length) % foundElements.length;
+                        scrollToResult();
+                    }
+                });
+            
+                document.getElementById('nextResult').addEventListener('click', function() {
+                    if (foundElements.length > 0) {
+                        currentIndex = (currentIndex + 1) % foundElements.length;
+                        scrollToResult();
+                    }
+                });
+            
+                function searchInCurrentPage(term) {
+                    const regex = new RegExp(`\\b${term}\\b`, 'gi');
+                    const contentDiv = document.body;
+                    const textNodes = getTextNodes(contentDiv);
+                    foundElements = [];
+                    currentIndex = 0;
+            
+                    textNodes.forEach(node => {
+                        const matches = [...node.textContent.matchAll(regex)];
+                        if (matches.length > 0) {
+                            const spanWrapper = document.createElement('span');
+                            let lastIndex = 0;
+            
+                            matches.forEach(match => {
+                                const matchIndex = match.index;
+                                spanWrapper.appendChild(document.createTextNode(node.textContent.substring(lastIndex, matchIndex)));
+            
+                                const highlightSpan = document.createElement('span');
+                                highlightSpan.className = 'highlight';
+                                highlightSpan.textContent = match[0];
+                                highlightSpan.style.backgroundColor = 'yellow';
+                                highlightSpan.style.fontWeight = 'bold';
+                                foundElements.push(highlightSpan);
+            
+                                spanWrapper.appendChild(highlightSpan);
+                                lastIndex = matchIndex + match[0].length;
+                            });
+            
+                            spanWrapper.appendChild(document.createTextNode(node.textContent.substring(lastIndex)));
+                            node.replaceWith(spanWrapper);
+                        }
+                    });
+            
+                    updateNavigation();
+                    if (foundElements.length > 0) scrollToResult();
+                }
+            
+                function getTextNodes(element) {
+                    const textNodes = [];
+                    function recursiveSearch(node) {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                            textNodes.push(node);
+                        } else {
+                            node.childNodes.forEach(child => recursiveSearch(child));
+                        }
+                    }
+                    recursiveSearch(element);
+                    return textNodes;
+                }
+            
+                function scrollToResult() {
+                    if (foundElements.length > 0) {
+                        foundElements[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        updateNavigation();
+                    }
+                }
+            
+                function updateNavigation() {
+                    document.getElementById('search-navigation').style.display = (foundElements.length > 0) ? 'inline-block' : 'none';
+                    document.getElementById('resultCounter').textContent = foundElements.length > 0 ? `${currentIndex + 1}/${foundElements.length}` : '0/0';
+                }
+            
+                function clearHighlights() {
+                    document.querySelectorAll('.highlight').forEach(span => {
+                        const parent = span.parentNode;
+                        parent.replaceChild(document.createTextNode(span.textContent), span);
+                        parent.normalize();
+                    });
+                    foundElements = [];
+                    updateNavigation();
+                }
+            </script>
+        
+        </header>
+
+
+        
+        
+
+
+
+
+
+
+
+
+        <!-- Carrito de compras -->
+        <button id="carrito-boton" onclick="toggleCarrito()">🛒 <span id="contador-carrito">0</span></button>
+
+        <div id="carrito-container" class="carrito-container">
+            <h2>Lista de compras</h2>
+            <ul id="lista-carrito"></ul>
+            <p><strong>Total: $<span id="total-carrito">0.00</span></strong></p>
+            <button class="boton_Ordenar_producto" onclick="finalizarCompra()">Finalizar Orden</button>
+        </div>
+
+        <script>
+            function toggleCarrito() {
+                const carritoContainer = document.getElementById("carrito-container");
+                carritoContainer.classList.toggle("activo");
+                actualizarCarrito();
+            }
+
+            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+            function agregarAlCarrito(id, nombre, precio) {
+                let productoExistente = carrito.find(producto => producto.id === id);
+                if (productoExistente) {
+                    productoExistente.cantidad++;
+                } else {
+                    carrito.push({ id, nombre, precio, cantidad: 1 });
+                }
+                guardarCarrito();
+            }
+
+            function incrementarCantidad(id) {
+                let producto = carrito.find(producto => producto.id === id);
+                if (producto) {
+                    producto.cantidad++;
+                    guardarCarrito();
+                }
+            }
+
+            function disminuirCantidad(id) {
+                let producto = carrito.find(producto => producto.id === id);
+                if (producto) {
+                    producto.cantidad--;
+                    if (producto.cantidad <= 0) {
+                        eliminarDelCarrito(id);
+                    } else {
+                        guardarCarrito();
+                    }
+                }
+            }
+
+            function eliminarDelCarrito(id) {
+                carrito = carrito.filter(producto => producto.id !== id);
+                guardarCarrito();
+            }
+
+            function guardarCarrito() {
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+                actualizarCarrito();
+            }
+
+            function actualizarCarrito() {
+                const contadorCarrito = document.getElementById("contador-carrito");
+                const listaCarrito = document.getElementById("lista-carrito");
+                const totalCarrito = document.getElementById("total-carrito");
+
+                contadorCarrito.innerText = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);
+
+                listaCarrito.innerHTML = "";
+                let total = 0;
+
+                carrito.forEach(producto => {
+                    total += producto.precio * producto.cantidad;
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        ${producto.nombre} - $${producto.precio.toFixed(2)} x ${producto.cantidad} 
+                        <button onclick="disminuirCantidad(${producto.id})">➖</button>
+                        <button onclick="incrementarCantidad(${producto.id})">➕</button>
+                        <button onclick="eliminarDelCarrito(${producto.id})">❌</button>
+                    `;
+                    listaCarrito.appendChild(li);
+                });
+
+                totalCarrito.innerText = total.toFixed(2);
+            }
+
+            function finalizarCompra() {
+                if (carrito.length === 0) {
+                    alert("El carrito está vacío.");
+                    return;
+                }
+            
+                // Guardar carrito en sessionStorage antes de redirigir
+                sessionStorage.setItem("carrito", JSON.stringify(carrito));
+            
+                // Redirigir al formulario
+                window.location.href = "formulario.html";
+            }
+            
+            
+
+            actualizarCarrito();
+        </script>
+
+        
+      
+
+        
+
+
+        <!--Cuerpo de la pagina-->
+        <main>
+
+
+
+            <!-- Cámaras de Seguridad --> 
+            <div class="seccion" id="Linea_Productos_Uno">
+                <div class="Titulo">
+                    <h1>Cámaras de Seguridad</h1>
+                </div>
+                <div class="Cuerpo">
+
+                    <div class="contenedor-productos">
+                        <div class="producto" data-id="1" data-nombre="BULLET DS-2CE10KFOT-LFS 2.8MM 5 MP COLOR VU HIKVISION" data-precio="51.39242161">
+                            <img src="IMG/4_Camaras_Analogicas/4-2-筒机73-DF0T-标配-左侧.png.thumb.319.319.png" alt="BULLET DS-2CE10KFOT-LFS 2.8MM 5 MP COLOR VU HIKVISION">
+                            <div class="info">
+                                <h4>BULLET DS-2CE10KFOT-LFS 2.8MM 5 MP COLOR VU HIKVISION</h4>
+                                <p>$51.39242161</p>
+                                <button onclick="agregarAlCarrito(1, 'BULLET DS-2CE10KFOT-LFS 2.8MM 5 MP COLOR VU HIKVISION', 51.39242161)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                        
+                        <div class="producto" data-id="2" data-nombre="BULLET DS-2CE12DF3T 2.8 MM COLOR VU  2MP HIKVISION" data-precio="62.12550941">
+                            <img src="IMG/4_Camaras_Analogicas/4-4-hikvision_ds_2ce12df3t_fs_2_8mm_ds_2ce12df3t_fs_2mp_outdoor_analog_1707497.png" alt="BULLET DS-2CE12DF3T 2.8 MM COLOR VU  2MP HIKVISION">
+                            <div class="info">
+                                <h4>BULLET DS-2CE12DF3T 2.8 MM COLOR VU  2MP HIKVISION</h4>
+                                <p>$62.12550941</p>
+                                <button onclick="agregarAlCarrito(2, 'BULLET DS-2CE12DF3T 2.8 MM COLOR VU  2MP HIKVISION', 62.12550941)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="3" data-nombre="BULLET DS-2CE16HOT-ITFS 2.8 MM 5 MP METALICA HIKVISION" data-precio="31.62610561">
+                            <img src="IMG/4_Camaras_Analogicas/4-8-DS-2CE16H0T-ITPFS.png.thumb.319.319.png" alt="BULLET DS-2CE16HOT-ITFS 2.8 MM 5 MP METALICA HIKVISION">
+                            <div class="info">
+                                <h4>BULLET DS-2CE16HOT-ITFS 2.8 MM 5 MP METALICA HIKVISION</h4>
+                                <p>$31.62610561</p>
+                                <button onclick="agregarAlCarrito(3, 'BULLET DS-2CE16HOT-ITFS 2.8 MM 5 MP METALICA HIKVISION', 31.62610561)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="4" data-nombre="BULLET DS-2CE16U1T-IT3F 8 MP 2.8 MM METAL HIKVISION" data-precio="70.59538672">
+                            <img src="IMG/4_Camaras_Analogicas/4-10-hikvision-ds-2ce16u1t-it3f2-8mm-6204253b-5d04__75605.png" alt="BULLET DS-2CE16U1T-IT3F 8 MP 2.8 MM METAL HIKVISION">
+                            <div class="info">
+                                <h4>BULLET DS-2CE16U1T-IT3F 8 MP 2.8 MM METAL HIKVISION</h4>
+                                <p>$70.59538672</p>
+                                <button onclick="agregarAlCarrito(4, 'BULLET DS-2CE16U1T-IT3F 8 MP 2.8 MM METAL HIKVISION', 70.59538672)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <div class="producto" data-id="5" data-nombre="BULLET DS-2CE19D0T-VFIT3F 2 MP HIKVISION" data-precio="46.58922862">
+                            <img src="IMG/4_Camaras_Analogicas/4-15-Hikvision-DS-2CE19D0T-VFIT3FC.png" alt="BULLET DS-2CE19D0T-VFIT3F 2 MP HIKVISION">
+                            <div class="info">
+                                <h4>BULLET DS-2CE19D0T-VFIT3F 2 MP HIKVISION</h4>
+                                <p>$46.58922862</p>
+                                <button onclick="agregarAlCarrito(5, 'BULLET DS-2CE19D0T-VFIT3F 2 MP HIKVISION', 46.58922862)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="6" data-nombre="DOMO  DS-2CE56DOT-IRMF 2MP HIKVISION 2.8 MM" data-precio="39.53263201d">
+                            <img src="IMG/4_Camaras_Analogicas/4-16-DS-2CE56D0T-IRMF_grande.png" alt="DOMO  DS-2CE56DOT-IRMF 2MP HIKVISION 2.8 MM">
+                            <div class="info">
+                                <h4>DOMO DS-2CE56DOT-IRMF 2MP HIKVISION 2.8 MM</h4>
+                                <p>$39.53263201</p>
+                                <button onclick="agregarAlCarrito(6, 'DOMO  DS-2CE56DOT-IRMF 2MP HIKVISION 2.8 MM', 39.53263201)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="7" data-nombre="DOMO  DS-2CE76HOT-ITPF 5 MP 2.8 MM HIKVISION" data-precio="29.64947401">
+                            <img src="IMG/4_Camaras_Analogicas/4-17-DS-2CE76H0T-ITPF_04e71a60-65c2-44a0-bf5b-e8ff4100dbeb_grande.png" alt="DOMO  DS-2CE76HOT-ITPF 5 MP 2.8 MM HIKVISION">
+                            <div class="info">
+                                <h4>DOMO DS-2CE76HOT-ITPF 5 MP 2.8 MM HIKVISION</h4>
+                                <p>$29.64947401</p>
+                                <button onclick="agregarAlCarrito(7, 'DOMO  DS-2CE76HOT-ITPF 5 MP 2.8 MM HIKVISION', 29.64947401)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="8" data-nombre="DOMO DS-2CE76HOT-ITMF 5MP 2.8MM HIKVISION" data-precio="31.62610561">
+                            <img src="IMG/4_Camaras_Analogicas/4-20-s-l1200.png" alt="DOMO DS-2CE76HOT-ITMF 5MP 2.8MM HIKVISION">
+                            <div class="info">
+                                <h4>DOMO DS-2CE76HOT-ITMF 5MP 2.8MM HIKVISION</h4>
+                                <p>$31.62610561</p>
+                                <button onclick="agregarAlCarrito(8, 'DOMO DS-2CE76HOT-ITMF 5MP 2.8MM HIKVISION', 31.62610561)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="9" data-nombre="TURRET DS-2CE70DF3T-MF COLOR VU 2MP HIKVISION" data-precio="41.35110818">
+                            <img src="IMG/4_Camaras_Analogicas/4-22-ds-2ce70df0t-pf-400.png" alt="TURRET DS-2CE70DF3T-MF COLOR VU 2MP HIKVISION">
+                            <div class="info">
+                                <h4>TURRET DS-2CE70DF3T-MF COLOR VU 2MP HIKVISION</h4>
+                                <p>$41.35110818</p>
+                                <button onclick="agregarAlCarrito(9, 'TURRET DS-2CE70DF3T-MF COLOR VU 2MP HIKVISION', 41.35110818)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="10" data-nombre="TURRET DS-2CE70KFOT-PFS 3K COLOR VU HIKVISION" data-precio="43.8812838">
+                            <img src="IMG/4_Camaras_Analogicas/4-25-DS-2CE70KF0T-PFS-3K-ColorVu-Indoor-Audio-Fixed-Turret-Camera.png" alt="TURRET DS-2CE70KFOT-PFS 3K COLOR VU HIKVISION">
+                            <div class="info">
+                                <h4>TURRET DS-2CE70KFOT-PFS 3K COLOR VU HIKVISION</h4>
+                                <p>$43.8812838</p>
+                                <button onclick="agregarAlCarrito(10, 'TURRET DS-2CE70KFOT-PFS 3K COLOR VU HIKVISION', 43.8812838)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="11" data-nombre="TURRET DS-2CE72DF3T-F  2 MP 2.8 MM HIKVISION" data-precio="59.29894802">
+                            <img src="IMG/4_Camaras_Analogicas/4-26-HX-72DF3TF3.png" alt="TURRET DS-2CE72DF3T-F  2 MP 2.8 MM HIKVISION">
+                            <div class="info">
+                                <h4>TURRET DS-2CE72DF3T-F  2 MP 2.8 MM HIKVISION</h4>
+                                <p>$59.29894802</p>
+                                <button onclick="agregarAlCarrito(11, 'TURRET DS-2CE72DF3T-F  2 MP 2.8 MM HIKVISION', 59.29894802)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="12" data-nombre="TURRET DS-2CE72UF3T-E 8MP COLOR VU HIKVISION" data-precio="130.7146882">
+                            <img src="IMG/4_Camaras_Analogicas/4-28-ds-2ce72uf3t-e_thm.png" alt="TURRET DS-2CE72UF3T-E 8MP COLOR VU HIKVISION">
+                            <div class="info">
+                                <h4>TURRET DS-2CE72UF3T-E 8MP COLOR VU HIKVISION</h4>
+                                <p>$130.7146882</p>
+                                <button onclick="agregarAlCarrito(12, 'TURRET DS-2CE72UF3T-E 8MP COLOR VU HIKVISION', 130.7146882)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="13" data-nombre="TURRET DS-2CE76U1T-ITMF 2.8 MM 4K HIKVISION" data-precio="58.31063222">
+                            <img src="IMG/4_Camaras_Analogicas/4-30-hikvision-ds-2ce76u1t-itmf2-8mm-54e00371-3e78__63184.png" alt="TURRET DS-2CE76U1T-ITMF 2.8 MM 4K HIKVISION">
+                            <div class="info">
+                                <h4>TURRET DS-2CE76U1T-ITMF 2.8 MM 4K HIKVISION</h4>
+                                <p>$58.31063222</p>
+                                <button onclick="agregarAlCarrito(13, 'TURRET DS-2CE76U1T-ITMF 2.8 MM 4K HIKVISION', 58.31063222)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="14" data-nombre=" BULLET IPC-B121H 2.8 MM 2 MP HILOOK" data-precio="47.37">
+                            <img src="IMG/3_Hilook/3-1-hilook-ipc-b121h-outdoor-2mp.png" alt=" BULLET IPC-B121H 2.8 MM 2 MP HILOOK">
+                            <div class="info">
+                                <h4> BULLET IPC-B121H 2.8 MM 2 MP HILOOK</h4>
+                                <p>$47.37</p>
+                                <button onclick="agregarAlCarrito(14, ' BULLET IPC-B121H 2.8 MM 2 MP HILOOK', 47.37)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="15" data-nombre="BULLET THC-B120-PS 2.8MM 2MP HILOOK" data-precio="26.00">
+                            <img src="IMG/3_Hilook/3-2-hilook筒机32-THC-B120-PS.png" alt="BULLET THC-B120-PS 2.8MM 2MP HILOOK">
+                            <div class="info">
+                                <h4>BULLET THC-B120-PS 2.8MM 2MP HILOOK</h4>
+                                <p>$26.00</p>
+                                <button onclick="agregarAlCarrito(15, 'BULLET THC-B120-PS 2.8MM 2MP HILOOK', 26.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="16" data-nombre="BULLET THC-B129-M 2.8 MM 2MP HILOOK COLORVU" data-precio="32.63">
+                            <img src="IMG/3_Hilook/3-3-THC-B129-筒机32-HILOOK-方窗-右侧.png" alt="BULLET THC-B129-M 2.8 MM 2MP HILOOK COLORVU">
+                            <div class="info">
+                                <h4>BULLET THC-B129-M 2.8 MM 2MP HILOOK COLORVU</h4>
+                                <p>$32.63</p>
+                                <button onclick="agregarAlCarrito(16, 'BULLET THC-B129-M 2.8 MM 2MP HILOOK COLORVU', 32.63)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="17" data-nombre="CAMARA DOMO PTZ 4 1080 25X PTZ-T4225I-D HILOOK" data-precio="283.10">
+                            <img src="IMG/3_Hilook/3-4-PTZ-T4225I-DE.png" alt="CAMARA DOMO PTZ 4 1080 25X PTZ-T4225I-D HILOOK">
+                            <div class="info">
+                                <h4>CAMARA DOMO PTZ 4" 1080 25X PTZ-T4225I-D HILOOK</h4>
+                                <p>$283.10</p>
+                                <button onclick="agregarAlCarrito(17, 'CAMARA DOMO PTZ 4 1080 25X PTZ-T4225I-D HILOOK', 283.10)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="18" data-nombre="TURRET IPC-T221H 2.8 MM 2 MP HILOOK" data-precio="47.37">
+                            <img src="IMG/3_Hilook/3-6-hilook_ipc-t-600x800.png" alt="TURRET IPC-T221H 2.8 MM 2 MP HILOOK">
+                            <div class="info">
+                                <h4>TURRET IPC-T221H 2.8 MM 2 MP HILOOK</h4>
+                                <p>$47.37</p>
+                                <button onclick="agregarAlCarrito(18, 'TURRET IPC-T221H 2.8 MM 2 MP HILOOK', 47.37)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="19" data-nombre="TURRET IPC-T250H 5 MP HILOOK  EXTERIOR" data-precio="90.00">
+                            <img src="IMG/3_Hilook/3-7-CCTHLK5003__1.png" alt="TURRET IPC-T250H 5 MP HILOOK  EXTERIOR">
+                            <div class="info">
+                                <h4>TURRET IPC-T250H 5 MP HILOOK  EXTERIOR</h4>
+                                <p>$90.00</p>
+                                <button onclick="agregarAlCarrito(19, 'TURRET IPC-T250H 5 MP HILOOK  EXTERIOR', 90.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="37" data-nombre="TURRET THC-T150-P  HILOOK 2.8 MM 5 MP" data-precio="27.22">
+                            <img src="IMG/3_Hilook/3-8-海螺14-Hilook.thumb_.1280.1280.png" alt="TURRET THC-T150-P  HILOOK 2.8 MM 5 MP">
+                            <div class="info">
+                                <h4>TURRET THC-T150-P  HILOOK 2.8 MM 5 MP</h4>
+                                <p>$27.22</p>
+                                <button onclick="agregarAlCarrito(37, 'TURRET THC-T150-P  HILOOK 2.8 MM 5 MP', 27.22)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+
+
+                        <div class="producto" data-id="40" data-nombre="BULLET CS-H3-R100-1J5WKFL 5 MP 3K EZVIZ" data-precio="112.00">
+                            <img src="IMG" alt="BULLET CS-H3-R100-1J5WKFL 5 MP 3K EZVIZ">
+                            <div class="info">
+                                <h4>BULLET CS-H3-R100-1J5WKFL 5 MP 3K EZVIZ</h4>
+                                <p>$112.00</p>
+                                <button onclick="agregarAlCarrito(40, 'BULLET CS-H3-R100-1J5WKFL 5 MP 3K EZVIZ', 112.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="41" data-nombre="BULLET KIT CS-BC1-B1 + BATERIA  2MP WIFI EZVIZ" data-precio="150.42">
+                            <img src="IMG/2_Ezviz/2-4-[CS-BC1-B1] Ezviz - Kit de Estación y 1 Cámara Inalambrica con Bateria FHD 1080P [2MP] Exterior-Interior.png" alt="BULLET KIT CS-BC1-B1 + BATERIA  2MP WIFI EZVIZ">
+                            <div class="info">
+                                <h4>BULLET KIT CS-BC1-B1 + BATERIA  2MP WIFI EZVIZ</h4>
+                                <p>$150.42</p>
+                                <button onclick="agregarAlCarrito(41, 'BULLET KIT CS-BC1-B1 + BATERIA  2MP WIFI EZVIZ', 150.42)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="42" data-nombre="CAMARA CS-H6  R100-1J5WF 5 MP EZVIZ" data-precio="84.35">
+                            <img src="IMG/2_Ezviz/2-7-ezviz-cs-h6-r100-1j5wf-front-view.png" alt="CAMARA CS-H6  R100-1J5WF 5 MP EZVIZ">
+                            <div class="info">
+                                <h4>CAMARA CS-H6 R100-1J5WF 5 MP EZVIZ</h4>
+                                <p>$84.35</p>
+                                <button onclick="agregarAlCarrito(42, 'CAMARA CS-H6  R100-1J5WF 5 MP EZVIZ', 84.35)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="43" data-nombre="CAMARA CS-H7C-R100-8G44WF 2K 360 EZVIZ" data-precio="80.62">
+                            <img src="IMG/2_Ezviz/2-9-image_1024.png" alt="CAMARA CS-H7C-R100-8G44WF 2K 360 EZVIZ">
+                            <div class="info">
+                                <h4>CAMARA CS-H7C-R100-8G44WF 2K 360 EZVIZ</h4>
+                                <p>$80.62 </p>
+                                <button onclick="agregarAlCarrito(43, 'CAMARA CS-H7C-R100-8G44WF 2K 360 EZVIZ', 80.62)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="44" data-nombre="CAMARA EZVIZ CS-BC2-AO-2C2WPFB 2 MP C/BATERIA" data-precio="95.00">
+                            <img src="IMG/2_Ezviz/2-10-bc2.png" alt="CAMARA EZVIZ CS-BC2-AO-2C2WPFB 2 MP C/BATERIA">
+                            <div class="info">
+                                <h4>CAMARA EZVIZ CS-BC2-AO-2C2WPFB 2 MP C/BATERIA</h4>
+                                <p>$95.00</p>
+                                <button onclick="agregarAlCarrito(44, 'CAMARA EZVIZ CS-BC2-AO-2C2WPFB 2 MP C/BATERIA', 95.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                        
+                        <div class="producto" data-id="45" data-nombre="CAMARA EZVIZ CS-BM1-R100-2D2WF-BE 2MP AZUL" data-precio="140.00">
+                            <img src="IMG/2_Ezviz/2-11-D_NQ_NP_819583-MCO72733877068_112023-O.png" alt="CAMARA EZVIZ CS-BM1-R100-2D2WF-BE 2MP AZUL">
+                            <div class="info">
+                                <h4>CAMARA EZVIZ CS-BM1-R100-2D2WF-BE 2MP AZUL</h4>
+                                <p>$140.00</p>
+                                <button onclick="agregarAlCarrito(45, 'CAMARA EZVIZ CS-BM1-R100-2D2WF-BE 2MP AZUL', 140.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="46" data-nombre="CAMARA EZVIZ CS-BM1-R100-2D2WF-RA 2MP ROSADO" data-precio="140.00">
+                            <img src="IMG/2_Ezviz/2-12-CS-BM1-R100-2D2WF-RA__BABYCAM_IP_CON_BATERIA_WIFI_2-removebg-preview-1.png" alt="CAMARA EZVIZ CS-BM1-R100-2D2WF-RA 2MP ROSADO">
+                            <div class="info">
+                                <h4>CAMARA EZVIZ CS-BM1-R100-2D2WF-RA 2MP ROSADO</h4>
+                                <p>$140.00</p>
+                                <button onclick="agregarAlCarrito(46, 'CAMARA EZVIZ CS-BM1-R100-2D2WF-RA 2MP ROSADO', 140.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="47" data-nombre="CAMARA EZVIZ CS-LC3-A0-8B4WDL 4MP IP" data-precio="160.85">
+                            <img src="IMG/2_Ezviz/2-14-camara-4mp-lc3-exterior-con-foco-700-lumen-ia-cs-lc3-a0-8b4wdl-20mm-ezviz.png" alt="CAMARA EZVIZ CS-LC3-A0-8B4WDL 4MP IP">
+                            <div class="info">
+                                <h4>CAMARA EZVIZ CS-LC3-A0-8B4WDL 4MP IP</h4>
+                                <p>$160.85</p>
+                                <button onclick="agregarAlCarrito(47, 'CAMARA EZVIZ CS-LC3-A0-8B4WDL 4MP IP', 160.85)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="53" data-nombre="KIT CAMARA EZVIZ CS-EB3/SP-R200 3MP EXTERIOR BATERIA 120" data-precio="200.43">
+                            <img src="IMG/2_Ezviz/2-21-cmbEZVCS-EB3-SP-3MP.png" alt="KIT CAMARA EZVIZ CS-EB3/SP-R200 3MP EXTERIOR BATERIA 120">
+                            <div class="info">
+                                <h4>KIT CAMARA EZVIZ CS-EB3/SP-R200 3MP EXTERIOR BATERIA 120</h4>
+                                <p>$200.43</p>
+                                <button onclick="agregarAlCarrito(53, 'KIT CAMARA EZVIZ CS-EB3/SP-R200 3MP EXTERIOR BATERIA 120', 200.43)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="54" data-nombre="KIT MINI PTZ  CS-EB8/SP 3MP EXTERIOR BATERIA EZVIZ" data-precio="240.00">
+                            <img src="IMG/2_Ezviz/2-22-[CS-EB8_SP-R100(3MP Type-C)(Kit)] Ezviz - Kit de Cámara PT Inalambrica HD [3MP] Panorámica e Inclinable Conectividad 4G con batería y Panel Solar.png" alt="KIT MINI PTZ  CS-EB8/SP 3MP EXTERIOR BATERIA EZVIZ">
+                            <div class="info">
+                                <h4>KIT MINI PTZ  CS-EB8/SP 3MP EXTERIOR BATERIA EZVIZ</h4>
+                                <p>$240.00</p>
+                                <button onclick="agregarAlCarrito(54, 'KIT MINI PTZ  CS-EB8/SP 3MP EXTERIOR BATERIA EZVIZ', 240.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="55" data-nombre="MINI PTZ  CS-HB8-R100-2C4WDL 4MP WIFI  360 EZVIZ" data-precio="195.00">
+                            <img src="IMG/2_Ezviz/2-23-51bT3orHv8L._AC_UF894,1000_QL80_.png" alt="MINI PTZ  CS-HB8-R100-2C4WDL 4MP WIFI  360 EZVIZ">
+                            <div class="info">
+                                <h4>MINI PTZ  CS-HB8-R100-2C4WDL 4MP WIFI  360 EZVIZ</h4>
+                                <p>$195.00</p>
+                                <button onclick="agregarAlCarrito(55, 'MINI PTZ  CS-HB8-R100-2C4WDL 4MP WIFI  360 EZVIZ', 195.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="56" data-nombre="MINI PTZ CS-EB8-R100-1K3FL4GA-LA IP 3MP EZVIZ" data-precio="189.99">
+                            <img src="IMG/2_Ezviz/2-24-download-21.png" alt="MINI PTZ CS-EB8-R100-1K3FL4GA-LA IP 3MP EZVIZ">
+                            <div class="info">
+                                <h4>MINI PTZ CS-EB8-R100-1K3FL4GA-LA IP 3MP EZVIZ</h4>
+                                <p>$189.99</p>
+                                <button onclick="agregarAlCarrito(56, 'MINI PTZ CS-EB8-R100-1K3FL4GA-LA IP 3MP EZVIZ', 189.99)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="57" data-nombre="MINI PTZ CS-H8C-R100-1J4WKFL  EZVIZ 4 MP  EXTERIOR" data-precio="112.00">
+                            <img src="IMG/2_Ezviz/2-25-98853e93607e47bb3847e4b9a6ab80ad_middle.png" alt="MINI PTZ CS-H8C-R100-1J4WKFL  EZVIZ 4 MP  EXTERIOR">
+                            <div class="info">
+                                <h4>MINI PTZ CS-H8C-R100-1J4WKFL  EZVIZ 4 MP  EXTERIOR</h4>
+                                <p>$112.00</p>
+                                <button onclick="agregarAlCarrito(57, 'MINI PTZ CS-H8C-R100-1J4WKFL  EZVIZ 4 MP  EXTERIOR', 112.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="63" data-nombre="BULLET IP  PTZ IP DS-2CD1A43G0-IZU 4MP 2.8-12 MM HIKVISION" data-precio="208.33">
+                            <img src="IMG/5_Camaras_IP/5-2-DS-2CD3626FWD-LPTZ2.png.thumb.319.319.png" alt="BULLET IP  PTZ IP DS-2CD1A43G0-IZU 4MP 2.8-12 MM HIKVISION">
+                            <div class="info">
+                                <h4>BULLET IP  PTZ IP DS-2CD1A43G0-IZU 4MP 2.8-12 MM HIKVISION</h4>
+                                <p>$208.33</p>
+                                <button onclick="agregarAlCarrito(63, 'BULLET IP  PTZ IP DS-2CD1A43G0-IZU 4MP 2.8-12 MM HIKVISION', 208.33)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="64" data-nombre="BULLET IP DS-2CD1043G2-LIU 4 MP POE AUDIO HIKVISION" data-precio="97.95">
+                            <img src="IMG/5_Camaras_IP/5-4-1-668e738a1ee1b-medium.png" alt="BULLET IP DS-2CD1043G2-LIU 4 MP POE AUDIO HIKVISION">
+                            <div class="info">
+                                <h4>BULLET IP DS-2CD1043G2-LIU 4 MP POE AUDIO HIKVISION</h4>
+                                <p>$97.95</p>
+                                <button onclick="agregarAlCarrito(64, 'BULLET IP DS-2CD1043G2-LIU 4 MP POE AUDIO HIKVISION', 97.95)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                        
+                        <div class="producto" data-id="65" data-nombre="BULLET IP DS-2CD1057GO-LUF 5MP POE 2.8MM AUDIO" data-precio="141.54">
+                            <img src="IMG/5_Camaras_IP/5-6-s-l400.png" alt="BULLET IP DS-2CD1057GO-LUF 5MP POE 2.8MM AUDIO">
+                            <div class="info">
+                                <h4>BULLET IP DS-2CD1057GO-LUF 5MP POE 2.8MM AUDIO</h4>
+                                <p>$141.54</p>
+                                <button onclick="agregarAlCarrito(65, 'BULLET IP DS-2CD1057GO-LUF 5MP POE 2.8MM AUDIO', 141.54)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="66" data-nombre="DOMO DS-2CD1143G2-LIU  4 MP HIKVISION" data-precio="100.58">
+                            <img src="IMG/5_Camaras_IP/5-8-双光半球61---基线---左侧.png" alt="DOMO DS-2CD1143G2-LIU  4 MP HIKVISION">
+                            <div class="info">
+                                <h4>DOMO DS-2CD1143G2-LIU  4 MP HIKVISION</h4>
+                                <p>$100.58</p>
+                                <button onclick="agregarAlCarrito(66, 'DOMO DS-2CD1143G2-LIU  4 MP HIKVISION', 100.58)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="67" data-nombre="DOMO DS-2CD2743G1-IZS 4 MP VARIFOCAL HIKVISION" data-precio="145.00">
+                            <img src="IMG/5_Camaras_IP/5-9-ds-2cd27xxg1-izs.png" alt="DOMO DS-2CD2743G1-IZS 4 MP VARIFOCAL HIKVISION">
+                            <div class="info">
+                                <h4>DOMO DS-2CD2743G1-IZS 4 MP VARIFOCAL HIKVISION</h4>
+                                <p>$145.00</p>
+                                <button onclick="agregarAlCarrito(67, 'DOMO DS-2CD2743G1-IZS 4 MP VARIFOCAL HIKVISION', 145.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="68" data-nombre="DOMO IP  DS-2CD2183G2-I 2.8 MM 8 MP HIKVISION" data-precio="219.23">
+                            <img src="IMG/5_Camaras_IP/5-10-51FTPbOxaTL.png" alt="DOMO IP  DS-2CD2183G2-I 2.8 MM 8 MP HIKVISION">
+                            <div class="info">
+                                <h4>DOMO IP  DS-2CD2183G2-I 2.8 MM 8 MP HIKVISION</h4>
+                                <p>$219.23</p>
+                                <button onclick="agregarAlCarrito(68, 'DOMO IP  DS-2CD2183G2-I 2.8 MM 8 MP HIKVISION', 219.23)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="69" data-nombre="DOMO IP DS-2CD1343G2-LIU 4 MP  2.8 MM HIKVISION" data-precio="125.00">
+                            <img src="IMG/5_Camaras_IP/5-13-ds2cd1343g2liu28mm-6718b364711ed-medium.png" alt="DOMO IP DS-2CD1343G2-LIU 4 MP  2.8 MM HIKVISION">
+                            <div class="info">
+                                <h4>DOMO IP DS-2CD1343G2-LIU 4 MP  2.8 MM HIKVISION</h4>
+                                <p>$125.00</p>
+                                <button onclick="agregarAlCarrito(69, 'DOMO IP DS-2CD1343G2-LIU 4 MP  2.8 MM HIKVISION', 125.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="70" data-nombre="TURRET DS-2CD1327G0-L 2.8 MM 2 MP HIKVISION" data-precio="71.17">
+                            <img src="IMG/5_Camaras_IP/5-15-DS-2CD1327G0-海螺38-基线-主图.png" alt="TURRET DS-2CD1327G0-L 2.8 MM 2 MP HIKVISION">
+                            <div class="info">
+                                <h4>TURRET DS-2CD1327G0-L 2.8 MM 2 MP HIKVISION</h4>
+                                <p>$71.17</p>
+                                <button onclick="agregarAlCarrito(70, 'TURRET DS-2CD1327G0-L 2.8 MM 2 MP HIKVISION', 71.17)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        
+
+                        <!-- Se pueden agregar más productos aquí -->
+                    </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.querySelectorAll(".producto").forEach(producto => {
+                                let precioElement = producto.querySelector("p");
+                                let precio = parseFloat(producto.getAttribute("data-precio"));
+                                if (!isNaN(precio)) {
+                                    precioElement.textContent = `$${precio.toFixed(2)}`;
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+                
+                
+            </div>
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Cables -->
+            <div class="seccion" id="Linea_Productos_Dos">
+                    
+                <!-- Título -->
+                <div class="Titulo">
+                    <h1>DVR y Videos BALUN</h1>
+                </div>
+
+                <!-- Presentación -->
+                <div class="Cuerpo">
+                    
+                    <div class="contenedor-productos">
+
+                        <div class="producto" data-id="620" data-nombre="VIDEO PORTERO CS-HP7-R101-1W2TFC 3MP EZVIZ" data-precio="206.97">
+                            <img src="IMG/2_Ezviz/2-31-[CS-HP7-R101-1W2TFC] Ezviz - Video Portero Doméstico Inteligente Inalambrico 2K [4MP] Pantalla 4.3_ Interior-Exterior Serie H.png" alt="VIDEO PORTERO CS-HP7-R101-1W2TFC 3MP EZVIZ">
+                            <div class="info">
+                                <h4>VIDEO PORTERO CS-HP7-R101-1W2TFC 3MP EZVIZ</h4>
+                                <p>$206.97</p>
+                                <button onclick="agregarAlCarrito(620, 'VIDEO PORTERO CS-HP7-R101-1W2TFC 3MP EZVIZ', 206.97)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="producto" data-id="71" data-nombre="NVR 16  DS-7616NI-Q2/16P 8MP POE HIKVISION" data-precio="307.53">
+                            <img src="IMG/5_Camaras_IP/5-16-31V3CmQi9lL.png" alt="NVR 16  DS-7616NI-Q2/16P 8MP POE HIKVISION">
+                            <div class="info">
+                                <h4>NVR 16  DS-7616NI-Q2/16P 8MP POE HIKVISION</h4>
+                                <p>$307.53</p>
+                                <button onclick="agregarAlCarrito(71, 'NVR 16  DS-7616NI-Q2/16P 8MP POE HIKVISION', 307.53)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="72" data-nombre="NVR 8 DS-7608NI-Q1  8MP  HIKVISION" data-precio="116.67">
+                            <img src="IMG/5_Camaras_IP/5-17-410ifEMBD9L._AC_UF894,1000_QL80_.png" alt="NVR 8 DS-7608NI-Q1  8MP  HIKVISION">
+                            <div class="info">
+                                <h4>NVR 8 DS-7608NI-Q1  8MP  HIKVISION</h4>
+                                <p>$116.67</p>
+                                <button onclick="agregarAlCarrito(72, 'NVR 8 DS-7608NI-Q1  8MP  HIKVISION', 116.67)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="73" data-nombre="NVR 8 DS-7608NI-Q2  8MP/4K  HIKVISION" data-precio="111.23">
+                            <img src="IMG/5_Camaras_IP/5-18-619KaiB0z8L._AC_UF894,1000_QL80_.png" alt="NVR 8 DS-7608NI-Q2  8MP/4K  HIKVISION">
+                            <div class="info">
+                                <h4>NVR 8 DS-7608NI-Q2  8MP/4K  HIKVISION</h4>
+                                <p>$111.23</p>
+                                <button onclick="agregarAlCarrito(73, 'NVR 8 DS-7608NI-Q2  8MP/4K  HIKVISION', 111.23)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="74" data-nombre="NVR CS-X5S-R100-8W WIFI EZVIZ  X5S" data-precio="71.90">
+                            <img src="IMG/5_Camaras_IP/5-19-f8353e58977309cbf4cdeb5f0f5f0efb_middle.png" alt="NVR CS-X5S-R100-8W WIFI EZVIZ  X5S">
+                            <div class="info">
+                                <h4>NVR CS-X5S-R100-8W WIFI EZVIZ  X5S</h4>
+                                <p>$71.90</p>
+                                <button onclick="agregarAlCarrito(74, 'NVR CS-X5S-R100-8W WIFI EZVIZ  X5S', 71.90)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="producto" data-id="20" data-nombre="DVR 16  IDS-7216HQHI-M1/S HIKVISION 4MP ACUSENSE" data-precio="185.1016335">
+                            <img src="IMG/4_Camaras_Analogicas/4-32-MB-0235HNN-H10-315A1-U1L1-A0-P-HIKVISION-315A2.png" alt="DVR 16  IDS-7216HQHI-M1/S HIKVISION 4MP ACUSENSE">
+                            <div class="info">
+                                <h4>DVR 16  IDS-7216HQHI-M1/S HIKVISION 4MP ACUSENSE</h4>
+                                <p>$185.1016335</p>
+                                <button onclick="agregarAlCarrito(20, 'DVR 16  IDS-7216HQHI-M1/S HIKVISION 4MP ACUSENSE', 185.1016335)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="21" data-nombre="DVR 16 IDS-7216HUHI-M2/S 8MP ACUSENSE HIKVISION" data-precio="340.9689511">
+                            <img src="IMG/4_Camaras_Analogicas/4-34-61UVdVzzFZL._AC_UF894,1000_QL80_.png" alt="DVR 16 IDS-7216HUHI-M2/S 8MP ACUSENSE HIKVISION">
+                            <div class="info">
+                                <h4>DVR 16 IDS-7216HUHI-M2/S 8MP ACUSENSE HIKVISION</h4>
+                                <p>$340.9689511</p>
+                                <button onclick="agregarAlCarrito(21, 'DVR 16 IDS-7216HUHI-M2/S 8MP ACUSENSE HIKVISION', 340.9689511)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="22" data-nombre="DVR 32 IDS-7232HQHI-M2/XT 5 MP 3K HIKVISION" data-precio="384.4548463">
+                            <img src="IMG/4_Camaras_Analogicas/4-35-MB-0236-P.png" alt="DVR 32 IDS-7232HQHI-M2/XT 5 MP 3K HIKVISION">
+                            <div class="info">
+                                <h4>DVR 32 IDS-7232HQHI-M2/XT 5 MP 3K HIKVISION</h4>
+                                <p>$384.4548463</p>
+                                <button onclick="agregarAlCarrito(22, 'DVR 32 IDS-7232HQHI-M2/XT 5 MP 3K HIKVISION', 384.4548463)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="23" data-nombre="DVR 4  204Q-K1(S)  4 MP  HILOOK" data-precio="63.53879011">
+                            <img src="IMG/4_Camaras_Analogicas/4-36-618-MGfzDZL._AC_UF1000,1000_QL80_.png" alt="DVR 4  204Q-K1(S)  4 MP  HILOOK">
+                            <div class="info">
+                                <h4>DVR 4  204Q-K1(S)  4 MP  HILOOK</h4>
+                                <p>$63.53879011</p>
+                                <button onclick="agregarAlCarrito(23, 'DVR 4  204Q-K1(S)  4 MP  HILOOK', 63.53879011)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="24" data-nombre="DVR 4  IDS-7204HUHI-M1/S  8MP+4IP ACUSENSE" data-precio="112.9545801">
+                            <img src="IMG/4_Camaras_Analogicas/4-40-51tImSg-HnL._AC_UF894,1000_QL80_.png" alt="DVR 4  IDS-7204HUHI-M1/S  8MP+4IP ACUSENSE">
+                            <div class="info">
+                                <h4>DVR 4  IDS-7204HUHI-M1/S  8MP+4IP ACUSENSE</h4>
+                                <p>$112.9545801</p>
+                                <button onclick="agregarAlCarrito(24, 'DVR 4  IDS-7204HUHI-M1/S  8MP+4IP ACUSENSE', 112.9545801)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="25" data-nombre="DVR 8  IDS-7208HUHI-M1/S 8 MP /4 ALM HIKVISION" data-precio="192.7215811">
+                            <img src="IMG/4_Camaras_Analogicas/4-42-MB-0235HNN-H10-315A1-U1L1-A0-P-HIKVISION-315A2.png.thumb.319.319.png" alt="DVR 8  IDS-7208HUHI-M1/S 8 MP /4 ALM HIKVISION">
+                            <div class="info">
+                                <h4>DVR 8  IDS-7208HUHI-M1/S 8 MP /4 ALM HIKVISION</h4>
+                                <p>$192.7215811</p>
+                                <button onclick="agregarAlCarrito(25, 'DVR 8  IDS-7208HUHI-M1/S 8 MP /4 ALM HIKVISION', 192.7215811)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="36" data-nombre="DVR 4  204Q-K1(S)  4 MP  HILOOK" data-precio="75.00">
+                            <img src="IMG/3_Hilook/3-5-DVR-204G-F1BS.png" alt="DVR 4  204Q-K1(S)  4 MP  HILOOK">
+                            <div class="info">
+                                <h4>DVR 4  204Q-K1(S)  4 MP  HILOOK</h4>
+                                <p>$75.00</p>
+                                <button onclick="agregarAlCarrito(36, 'DVR 4  204Q-K1(S)  4 MP  HILOOK', 75.00)">Añadir al Carrito</button>
+                            </div>
+                        </div> 
+
+                        <div class="producto" data-id="26" data-nombre="VIDEO BALUN RACKEABLE 16 CAMARAS STC" data-precio="78.07694822">
+                            <img src="IMG/4_Camaras_Analogicas/4-44-D_NQ_NP_757416-MLV50118870090_052022-O.png" alt="VIDEO BALUN RACKEABLE 16 CAMARAS STC">
+                            <div class="info">
+                                <h4>VIDEO BALUN RACKEABLE 16 CAMARAS STC</h4>
+                                <p>$78.07694822</p>
+                                <button onclick="agregarAlCarrito(26, 'VIDEO BALUN RACKEABLE 16 CAMARAS STC', 78.07694822)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="27" data-nombre="VIDEO BALUN HIKVISION  DS-1H18S/E 4K CLIP" data-precio="2.757446226">
+                            <img src="IMG/4_Camaras_Analogicas/4-45-1070817066_lg.png" alt="VIDEO BALUN HIKVISION  DS-1H18S/E 4K CLIP">
+                            <div class="info">
+                                <h4>VIDEO BALUN HIKVISION  DS-1H18S/E 4K CLIP</h4>
+                                <p>$2.757446226</p>
+                                <button onclick="agregarAlCarrito(27, 'VIDEO BALUN HIKVISION  DS-1H18S/E 4K CLIP', 2.757446226)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="28" data-nombre="VIDEO BALUN 1080 2 MP TORNILLO WIRE PLUS" data-precio="2.045746771">
+                            <img src="IMG/4_Camaras_Analogicas/4-47-Video Balun Con Tornillos-600x600.png" alt="VIDEO BALUN 1080 2 MP TORNILLO WIRE PLUS">
+                            <div class="info">
+                                <h4>VIDEO BALUN 1080 2 MP TORNILLO WIRE PLUS</h4>
+                                <p>$2.045746771</p>
+                                <button onclick="agregarAlCarrito(28, 'VIDEO BALUN 1080 2 MP TORNILLO WIRE PLUS', 2.045746771)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="58" data-nombre="NVR CS-X5S-R100-8W WIFI EZVIZ  X5S" data-precio="71.90">
+                            <img src="IMG/2_Ezviz/2-27-29662ec0cdb2b64cf895a132d1e1ce30.png" alt="NVR CS-X5S-R100-8W WIFI EZVIZ  X5S">
+                            <div class="info">
+                                <h4>NVR CS-X5S-R100-8W WIFI EZVIZ  X5S</h4>
+                                <p>$71.90</p>
+                                <button onclick="agregarAlCarrito(58, 'NVR CS-X5S-R100-8W WIFI EZVIZ  X5S', 71.90)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+
+
+
+                        
+
+                        
+                        
+
+                        <!-- Se pueden agregar más productos aquí -->
+                    </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.querySelectorAll(".producto").forEach(producto => {
+                                let precioElement = producto.querySelector("p");
+                                let precio = parseFloat(producto.getAttribute("data-precio"));
+                                if (!isNaN(precio)) {
+                                    precioElement.textContent = `$${precio.toFixed(2)}`;
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+                
+
+                
+            
+            </div><!-- *************** -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Controladores -->
+            <div class="seccion" id="Linea_Productos_Tres">
+                    
+                <!-- Título -->
+                <div class="Titulo">
+                    <h1>Fuentes de Poder</h1>
+                </div>
+
+                <!-- Presentación -->
+                <div class="Cuerpo">
+                    
+                    <div class="contenedor-productos">
+                        <div class="producto" data-id="29" data-nombre="FUENTE CENTRALIZADA 12 V 20 AMP 18 CAN STC-FC20A18CH" data-precio="41.81561193">
+                            <img src="IMG/4_Camaras_Analogicas/4-48-STC-FC20A18CH.png" alt="FUENTE CENTRALIZADA 12 V 20 AMP 18 CAN STC-FC20A18CH">
+                            <div class="info">
+                                <h4>FUENTE CENTRALIZADA 12 V 20 AMP 18 CAN STC-FC20A18CH</h4>
+                                <p>$41.81561193</p>
+                                <button onclick="agregarAlCarrito(29, 'FUENTE CENTRALIZADA 12 V 20 AMP 18 CAN STC-FC20A18CH', 41.81561193)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="30" data-nombre="FUENTE CENTRALIZADA 12 V 30 AMP 18 CAN STC-FC30A18CHC" data-precio="49.41579001">
+                            <img src="IMG/4_Camaras_Analogicas/4-49-STC-FC30A18CH.png" alt="FUENTE CENTRALIZADA 12 V 30 AMP 18 CAN STC-FC30A18CHC">
+                            <div class="info">
+                                <h4>FUENTE CENTRALIZADA 12 V 30 AMP 18 CAN STC-FC30A18CHC</h4>
+                                <p>$49.41579001</p>
+                                <button onclick="agregarAlCarrito(30, 'FUENTE CENTRALIZADA 12 V 30 AMP 18 CAN STC-FC30A18CHC', 49.41579001)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="31" data-nombre="FUENTE DE PODER CAMARAS 1 AMP 12 V STC" data-precio="1.90751643">
+                            <img src="IMG/4_Camaras_Analogicas/4-50-D_NQ_NP_766614-MLV76651384223_052024-O.png" alt="FUENTE DE PODER CAMARAS 1 AMP 12 V STC">
+                            <div class="info">
+                                <h4>FUENTE DE PODER CAMARAS 1 AMP 12 V STC</h4>
+                                <p>$1.90751643</p>
+                                <button onclick="agregarAlCarrito(31, 'FUENTE DE PODER CAMARAS 1 AMP 12 V STC', 1.90751643)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="32" data-nombre="FUENTE DE PODER CAMARAS 1 AMP 12 V WIRE PLUS" data-precio="1.877784454">
+                            <img src="IMG/4_Camaras_Analogicas/4-51-D_NQ_NP_845852-MLV51618677749_092022-O.png" alt="FUENTE DE PODER CAMARAS 1 AMP 12 V WIRE PLUS">
+                            <div class="info">
+                                <h4>FUENTE DE PODER CAMARAS 1 AMP 12 V WIRE PLUS</h4>
+                                <p>$1.877784454</p>
+                                <button onclick="agregarAlCarrito(32, 'FUENTE DE PODER CAMARAS 1 AMP 12 V WIRE PLUS', 1.877784454)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="33" data-nombre="FUENTE DE PODER CAMARAS 2 AMP 12 V STC" data-precio="3.034062571">
+                            <img src="IMG/4_Camaras_Analogicas/4-52-FuenteStc12V2AmpStc-Ap2A_d3ef7e0c-86f2-4515-9596-9716d0d9a752_720x.png" alt="FUENTE DE PODER CAMARAS 2 AMP 12 V STC">
+                            <div class="info">
+                                <h4>FUENTE DE PODER CAMARAS 2 AMP 12 V STC</h4>
+                                <p>$3.034062571</p>
+                                <button onclick="agregarAlCarrito(33, 'FUENTE DE PODER CAMARAS 2 AMP 12 V STC', 3.034062571)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="34" data-nombre="FUENTE DE PODER CAMARAS 3 AMP 12 V STC" data-precio="5.386313328">
+                            <img src="IMG/4_Camaras_Analogicas/4-53-fuente-de-poder-12v-3-amper-fuente-para-camaras-fuente-para-control-de-acceso-fuente-de-poder-regulada-12-volts-3a.png" alt="FUENTE DE PODER CAMARAS 3 AMP 12 V STC">
+                            <div class="info">
+                                <h4>FUENTE DE PODER CAMARAS 3 AMP 12 V STC</h4>
+                                <p>$5.386313328</p>
+                                <button onclick="agregarAlCarrito(34, 'FUENTE DE PODER CAMARAS 3 AMP 12 V STC', 5.386313328)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="35" data-nombre="FUENTE DE PODER CAMARAS 5 AMP 12 V STC" data-precio="8.430338446">
+                            <img src="IMG/4_Camaras_Analogicas/4-54-IMP-12V5A-2.png" alt="FUENTE DE PODER CAMARAS 5 AMP 12 V STC">
+                            <div class="info">
+                                <h4>FUENTE DE PODER CAMARAS 5 AMP 12 V STC</h4>
+                                <p>$8.430338446</p>
+                                <button onclick="agregarAlCarrito(35, 'FUENTE DE PODER CAMARAS 5 AMP 12 V STC', 8.430338446)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+                
+                        <!-- Se pueden agregar más productos aquí -->
+                    </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.querySelectorAll(".producto").forEach(producto => {
+                                let precioElement = producto.querySelector("p");
+                                let precio = parseFloat(producto.getAttribute("data-precio"));
+                                if (!isNaN(precio)) {
+                                    precioElement.textContent = `$${precio.toFixed(2)}`;
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+                
+
+            
+            </div><!-- *************** -->
+
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Cámaras de Seguridad --> 
+            <div class="seccion" id="Linea_Productos_Cuatro">
+                <div class="Titulo">
+                    <h1>Accesorios</h1>
+                </div>
+                <div class="Cuerpo">
+
+                    <div class="contenedor-productos">
+                       
+                        <div class="producto" data-id="38" data-nombre="BOTON PANICO CS-T3C EZVIZ WIFI" data-precio="27.25">
+                            <img src="IMG/2_Ezviz/2-1-CST3C-l.png" alt="BOTON PANICO CS-T3C EZVIZ WIFI">
+                            <div class="info">
+                                <h4>BOTON PANICO CS-T3C EZVIZ WIFI</h4>
+                                <p>$27.25</p>
+                                <button onclick="agregarAlCarrito(38, 'BOTON PANICO CS-T3C EZVIZ WIFI', 27.25)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="39" data-nombre="CERRADURA INTELIGENTE CS-DL05-R100-WBCP-GR EZVIZ" data-precio="180.00">
+                            <img src="IMG/2_Ezviz/2-16-5BCS-DL05-R100-WBCP-GR_28M_29_5D_20Ezviz_20-_20Cerradura_20Inteligente_20con_20Huella_20Dactilar_1200x.png" alt="CERRADURA INTELIGENTE CS-DL05-R100-WBCP-GR EZVIZ">
+                            <div class="info">
+                                <h4>CERRADURA INTELIGENTE CS-DL05-R100-WBCP-GR EZVIZ</h4>
+                                <p>$180.00</p>
+                                <button onclick="agregarAlCarrito(39, 'CERRADURA INTELIGENTE CS-DL05-R100-WBCP-GR EZVIZ', 180.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="48" data-nombre="CERRADURA INTELIGENTE CS-L2S-11FCP EZVIZ" data-precio="250.00">
+                            <img src="IMG/2_Ezviz/2-17-productos34_156251.png" alt="CERRADURA INTELIGENTE CS-L2S-11FCP EZVIZ">
+                            <div class="info">
+                                <h4>CERRADURA INTELIGENTE CS-L2S-11FCP EZVIZ</h4>
+                                <p>$250.00</p>
+                                <button onclick="agregarAlCarrito(48, 'CERRADURA INTELIGENTE CS-L2S-11FCP EZVIZ', 250.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="49" data-nombre="CERRADURA INTELIGENTE CS-L2S-11FCP EZVIZ" data-precio="250.00">
+                            <img src="IMG/2_Ezviz/2-17-productos34_156251.png" alt="CERRADURA INTELIGENTE CS-L2S-11FCP EZVIZ">
+                            <div class="info">
+                                <h4>CERRADURA INTELIGENTE CS-L2S-11FCP EZVIZ</h4>
+                                <p>$250.00</p>
+                                <button onclick="agregarAlCarrito(49, 'CERRADURA INTELIGENTE CS-L2S-11FCP EZVIZ', 250.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="50" data-nombre="DOMO EZVIZ CS-C6-A0-8C4WF WIFI 4MP 4X" data-precio="105.00">
+                            <img src="IMG/2_Ezviz/2-18-D_NQ_NP_951671-MLV77183770777_062024-O.png" alt="DOMO EZVIZ CS-C6-A0-8C4WF WIFI 4MP 4X">
+                            <div class="info">
+                                <h4>DOMO EZVIZ CS-C6-A0-8C4WF WIFI 4MP 4X</h4>
+                                <p>$105.00</p>
+                                <button onclick="agregarAlCarrito(50, 'DOMO EZVIZ CS-C6-A0-8C4WF WIFI 4MP 4X', 105.00)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="51" data-nombre="GATEWAY HOME CS-A3-AO-W EZVIZ PARA  CONECTAR" data-precio="76.28">
+                            <img src="IMG/2_Ezviz/2-19-41PVw9u592L._AC_UF1000,1000_QL80_.png" alt="GATEWAY HOME CS-A3-AO-W EZVIZ PARA  CONECTAR">
+                            <div class="info">
+                                <h4>GATEWAY HOME CS-A3-AO-W EZVIZ PARA  CONECTAR</h4>
+                                <p>$76.28</p>
+                                <button onclick="agregarAlCarrito(51, 'GATEWAY HOME CS-A3-AO-W EZVIZ PARA  CONECTAR', 76.28)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="52" data-nombre="KIT ALARMA  CS-B1-AO-A34  EZVIZ WIFI" data-precio="101.08">
+                            <img src="IMG/2_Ezviz/2-20-1000x1000-EZVIZ007.png" alt="KIT ALARMA  CS-B1-AO-A34  EZVIZ WIFI">
+                            <div class="info">
+                                <h4>KIT ALARMA  CS-B1-AO-A34  EZVIZ WIFI</h4>
+                                <p>$101.08</p>
+                                <button onclick="agregarAlCarrito(52, 'KIT ALARMA  CS-B1-AO-A34  EZVIZ WIFI', 101.08)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="producto" data-id="59" data-nombre="SENSOR EZVIZ CS-T1C-AO-BG  PIR T1C INALAMBRICO" data-precio="20.05">
+                            <img src="IMG/2_Ezviz/2-28-(CS-T1C-A0-BG) Ezviz - Sensor de Movimiento por Infrarrojos Pasivos (PIR) para Panel A3 Interior.png" alt="SENSOR EZVIZ CS-T1C-AO-BG  PIR T1C INALAMBRICO">
+                            <div class="info">
+                                <h4>SENSOR EZVIZ CS-T1C-AO-BG  PIR T1C INALAMBRICO</h4>
+                                <p>$20.05</p>
+                                <button onclick="agregarAlCarrito(59, 'SENSOR EZVIZ CS-T1C-AO-BG  PIR T1C INALAMBRICO', 20.05)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="60" data-nombre="SENSOR MAGNETICO CS-T2C-AO-BG EZVIZ APERTURA Y CIERRE" data-precio="20.05">
+                            <img src="IMG/2_Ezviz/2-29-D_NQ_NP_896509-MLA78470457172_082024-O.png" alt="SENSOR MAGNETICO CS-T2C-AO-BG EZVIZ APERTURA Y CIERRE">
+                            <div class="info">
+                                <h4>SENSOR MAGNETICO CS-T2C-AO-BG EZVIZ APERTURA Y CIERRE</h4>
+                                <p>$20.05</p>
+                                <button onclick="agregarAlCarrito(60, 'SENSOR MAGNETICO CS-T2C-AO-BG EZVIZ APERTURA Y CIERRE', 20.05)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        <div class="producto" data-id="61" data-nombre="SIRENA CS-T9C-AO-BG INALAMBRICA EXTERIOR BATERIA EZVIZ" data-precio="58.82">
+                            <img src="IMG/2_Ezviz/2-30-sirena-inalambrica-smart-cs-t9c-a0-bg-ezviz.png" alt="SIRENA CS-T9C-AO-BG INALAMBRICA EXTERIOR BATERIA EZVIZ">
+                            <div class="info">
+                                <h4>SIRENA CS-T9C-AO-BG INALAMBRICA EXTERIOR BATERIA EZVIZ</h4>
+                                <p>$58.82</p>
+                                <button onclick="agregarAlCarrito(61, 'SIRENA CS-T9C-AO-BG INALAMBRICA EXTERIOR BATERIA EZVIZ', 58.82)">Añadir al Carrito</button>
+                            </div>
+                        </div>
+
+                        
+
+                        <!-- Se pueden agregar más productos aquí -->
+                    </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.querySelectorAll(".producto").forEach(producto => {
+                                let precioElement = producto.querySelector("p");
+                                let precio = parseFloat(producto.getAttribute("data-precio"));
+                                if (!isNaN(precio)) {
+                                    precioElement.textContent = `$${precio.toFixed(2)}`;
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+                
+                
+            </div>
+
+
+
+
+
+
+
+        </main>
+
+        <!--Pies de la pagina-->
+        <footer>
+            <p style="color: #0465a9;">&copy; 2025 Mercado Online de OffiShop -/- RIF: J=50119753-9</p>
+        </footer>
+ 
+    </div>
+ 
+    <!-- Barra lateral derecha para las Redes de OffiShop -->
+    <nav id="menu_contactos">      
+        <h3>Síguenos en...</h3>
+        <ul>
+            <!--Telefono-->
+            <li><a style="background: #0066FF;" href="tel:+584124447744" target="_blank"><i class="fas fa-phone"></i></a></li>
+            <!--FaceBook-->
+            <li><a style="background: #3b5998;" href="https://www.facebook.com/share/16Jx9qFki4/" target="_blank"><i class="fab fa-facebook"></i></a></li>
+            <!--Instagram-->
+            <li><a style="background: #bc2a8d;" href="https://www.instagram.com/offishop_ll?igsh=enQ5OTAyZmNyazdu" target="_blank"><i class="fab fa-instagram"></i></a></li>
+            <!--WhatsApp-->
+            <li><a style="background: #25d366" href="https://api.whatsapp.com/send/?phone=584124447744&text&type=phone_number&app_absent=0&wame_ctl=1" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+            <!--Correo-->
+            <li><a style="background: #5dade2;" href="mailto:Offishop.ventas1@gmail.com"><i class="fas fa-envelope"></i></a></li>
+            <!--TikTok-->
+            <li><a style="background: #010101;" href="https://www.tiktok.com/@offishop_ll" target="_blank"><i class="fab fa-tiktok"></i></a></li>
+        </ul>
+    </nav>
+</body>
+
+</html>
+ 
