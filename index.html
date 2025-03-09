@@ -109,6 +109,32 @@
 
                 </div>
             
+                <style>
+                    .Encabezado h1,
+                    .Cuerpo_Encabezado p {
+                        display: block; /* Visible por defecto */
+                    }
+
+                    .Logo_Titular {
+                        display: block;
+                        width: 100%;
+                        max-width: 150px;
+                    }
+
+                    /* Ocultar texto cuando el ancho sea de 300px o menos */
+                    @media screen and (max-width: 300px) {
+                        .Encabezado h1,
+                        .Cuerpo_Encabezado p {
+                            display: none;
+                        }
+
+                        .Logo_Titular {
+                            max-width: 200px;
+                            margin: 0 auto;
+                        }
+                    }
+
+                </style>
             </div>
 
             <div id="busqueda-container">
